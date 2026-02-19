@@ -1,0 +1,10 @@
+:root {
+    --bg-color: #050508;
+    --surface: #0d0d12;
+    --accent: #7c3aed; /* Un violet électrique */
+    --accent-glow: rgba(124, 58, 237, 0.3);
+    --text-primary: #ffffff;
+    --text-muted: #888891;
+    --border: rgba(255, 255, 255, 0.08);
+    --font-main: 'Inter', system-ui, sans-serif;
+}

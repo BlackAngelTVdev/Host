@@ -1,0 +1,102 @@
+/* resources/css/home.css */
+
+.home-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  align-items: center;
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* Section Titre */
+.hero {
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 5rem;
+  font-weight: 900;
+  margin-bottom: 10px;
+  /* On utilise le dégradé défini en global */
+  background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+}
+
+/* La carte centrale */
+.info-card {
+  background: var(--bg-surface);
+  padding: 50px;
+  border-radius: 24px;
+  border: 1px solid var(--border-color);
+  max-width: 800px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+.card-title {
+  font-size: 2rem;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.card-text {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  line-height: 1.8;
+  margin-bottom: 30px;
+}
+
+/* Liste à puces custom */
+.features-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.features-list li {
+  display: flex;
+  align-items: center;
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+}
+
+.features-list li::before {
+  content: "✅";
+  margin-right: 15px;
+}
+
+/* Zone d'action */
+.action-area {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.btn-primary {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  padding: 16px 40px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 10px 20px var(--accent-glow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px var(--accent);
+}
+
+/* Animation d'entrée */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

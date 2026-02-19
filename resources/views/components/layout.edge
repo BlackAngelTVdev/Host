@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LaxaCube | Cloud Suisse</title>
+
+    {{-- On charge toujours le CSS global --}}
+    @vite(['resources/css/app.css'])
+
+    {{-- On charge le CSS spécifique passé en argument --}}
+    @if(css)
+    @vite(['resources/css/' + css + '.css'])
+    @endif
+</head>
+
+<body>
+    <header>
+        <div class="logo">LX CLOUD</div>
+        <nav>
+            <a href="{{ route('pricing') }}">Abonnement</a>
+            {{-- <a href="{{ route('home') }}">Concept</a> --}}
+            <a href="{{ route('register') }}" class="nav-cta">Créer un compte</a>
+        </nav>
+    </header>
+
+    <main>
+        {{{ await $slots.main() }}}
+    </main>
+</body>
+
+</html>
