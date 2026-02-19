@@ -17,13 +17,25 @@
 
 <body>
     <header>
+    <a href="{{ route('home') }}" class="logo-link">
         <div class="logo">LX CLOUD</div>
-        <nav>
-            <a href="{{ route('pricing') }}">Abonnement</a>
-            {{-- <a href="{{ route('home') }}">Concept</a> --}}
+    </a>
+    <nav>
+
+        @if(session.has('user'))
+            {{-- Si l'utilisateur est connecté --}}
+            <a href="{{ route('dashboard', { username: session.get('user').username }) }}" class="nav-link">Mon Panel</a>
+            
+            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                {{ csrfField() }}
+                <button type="submit" class="nav-cta logout-btn">Déconnexion</button>
+            </form>
+        @else
+            {{-- Si l'utilisateur n'est pas connecté --}}
             <a href="{{ route('register') }}" class="nav-cta">Créer un compte</a>
-        </nav>
-    </header>
+        @endif
+    </nav>
+</header>
 
     <main>
         {{{ await $slots.main() }}}

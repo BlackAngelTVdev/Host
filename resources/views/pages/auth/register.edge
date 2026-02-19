@@ -1,0 +1,37 @@
+@layout({ css: 'auth/register' })
+  <div class="register-container">
+    <div class="register-card">
+      <div class="register-header">
+        <h1>Rejoindre LaxaCube</h1>
+        <p>Ton espace cloud personnel t'attend.</p>
+      </div>
+
+      <form action="{{ route('register.store') }}" method="POST" class="register-form">
+        {{ csrfField() }}
+        {{-- Username --}}
+        <div class="input-group">
+          <label for="username">Nom d'utilisateur</label>
+          <input type="text" id="username" name="username" placeholder="Pseudo" required>
+        </div>
+
+        {{-- Email --}}
+        <div class="input-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" placeholder="ton@email.ch" required>
+        </div>
+
+        {{-- Password --}}
+        <div class="input-group">
+          <label for="password">Mot de passe</label>
+          <input type="password" id="password" name="password" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn-submit">Créer mon compte</button>
+      </form>
+
+      <div class="register-footer">
+        <p>Déjà membre ? <a href="https://cloud.laxacube.ch">Connexion</a></p>
+      </div>
+    </div>
+  </div>
+@end

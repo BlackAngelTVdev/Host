@@ -1,0 +1,125 @@
+.dashboard-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.panel-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 40px;
+    border-radius: 32px;
+    width: 100%;
+    max-width: 750px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Header du Panel */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 50px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 25px;
+}
+
+.btn-cloud-access {
+    background: var(--text-primary);
+    color: var(--bg-color);
+    padding: 12px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-cloud-access:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+}
+
+/* Section Stats */
+.stats-container {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    margin-bottom: 50px;
+}
+
+.storage-text h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+}
+
+.storage-numbers {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.storage-numbers .highlight {
+    color: var(--accent);
+    font-weight: 800;
+}
+
+/* Graph Circulaire */
+.progress-circle {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent) calc(var(--percent) * 1%), #1e1e26 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.progress-circle::before {
+    content: "";
+    position: absolute;
+    width: 135px;
+    height: 135px;
+    background: var(--surface);
+    border-radius: 50%;
+}
+
+.inner-content {
+    position: relative;
+    text-align: center;
+}
+
+.usage { font-size: 1.8rem; font-weight: 900; display: block; color: #fff; }
+.label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+/* Banner Upgrade */
+.upgrade-banner {
+    background: linear-gradient(90deg, rgba(124, 58, 237, 0.1), transparent);
+    border: 1px solid var(--accent-glow);
+    padding: 25px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.upgrade-text h4 {
+    color: var(--accent);
+    margin-bottom: 5px;
+}
+
+.upgrade-text p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.btn-upgrade {
+    color: var(--text-primary);
+    text-decoration: underline;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.btn-upgrade:hover {
+    color: var(--accent);
+}

@@ -1,0 +1,107 @@
+.pricing-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.pricing-header h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+}
+
+.pricing-grid {
+    display: grid;
+    /* Ajuste le nombre de colonnes automatiquement, minimum 300px chacune */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    align-items: stretch; /* FORCE TOUTES LES CARTES À LA MÊME HAUTEUR */
+}
+
+.plan-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column; /* Indispensable pour aligner le bouton en bas */
+    position: relative;
+    transition: all 0.3s ease;
+}
+/* Style pour l'abonnement mis en avant */
+.plan-card.featured {
+    border-color: var(--accent);
+    box-shadow: 0 0 30px var(--accent-glow);
+    transform: scale(1.05);
+}
+
+.badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.plan-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+}
+
+.price {
+    margin-bottom: 1.5rem;
+}
+
+.amount {
+    font-size: 3rem;
+    font-weight: 800;
+}
+
+.storage {
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+.plan-features {
+    list-style: none;
+    margin-bottom: 2rem;
+    flex-grow: 1; /* Le conteneur de features prend l'espace disponible */
+}
+
+.plan-features li {
+    margin-bottom: 10px;
+    color: var(--text-muted);
+}
+
+.plan-features li::before {
+    content: "→";
+    margin-right: 10px;
+    color: var(--accent);
+}
+
+.plan-btn {
+    display: block;
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.featured .plan-btn {
+    background: var(--accent);
+    border: none;
+}
+
+.plan-btn:hover {
+    background: var(--text-primary);
+    color: var(--bg-color);
+}

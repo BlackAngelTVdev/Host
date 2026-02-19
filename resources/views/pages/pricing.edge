@@ -1,0 +1,34 @@
+@layout({ css: 'pages/pricing' })
+  <div class="pricing-header">
+    <h1 class="text-gradient">Choisis ton espace.</h1>
+    <p>Des prix simples, pas de frais cachés, hébergé chez moi.</p>
+  </div>
+
+  <div class="pricing-grid">
+    @each(plan in plans)
+      <div class="plan-card {{ plan.highlight ? 'featured' : '' }}">
+        @if(plan.highlight)
+          <span class="badge">Recommandé</span>
+        @endif
+        
+        <h3>{{ plan.name }}</h3>
+        <div class="price">
+          <span class="amount">{{ plan.price }} CHF</span>
+          <span class="period">/mois</span>
+        </div>
+        
+        <div class="storage">{{ plan.storage }} de stockage</div>
+
+        <ul class="plan-features">
+          @each(feature in plan.features)
+            <li>{{ feature }}</li>
+          @end
+        </ul>
+
+        <a href="{{ route('register') }}" class="plan-btn">
+          {{ plan.cta }}
+        </a>
+      </div>
+    @end
+  </div>
+@end

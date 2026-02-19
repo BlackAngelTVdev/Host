@@ -1,28 +1,103 @@
 @layout({ css: 'home' })
-  <div class="home-wrapper">
+<div class="page-split">
+  <div class="content-side">
     
-    <section class="hero">
-      <h1 class="hero-title">LaxaCube.</h1>
-      <p class="hero-subtitle">Ton stockage, tes règles, mon serveur.</p>
-    </section>
+    {{-- Section Hero : On réduit l'espace ici --}}
+    <section class="stack-section hero-container" id="hero-section">
+      <div class="home-wrapper">
+        <header class="hero">
+          <h1 class="hero-title">LaxaCube.</h1>
+          <p class="hero-subtitle">Ton stockage, tes règles, mon serveur.</p>
+        </header>
 
-    <section class="info-card">
-      <h2 class="card-title">C'est quoi le délire ?</h2>
-      <p class="card-text">
-        J'ai monté ce serveur sur mon propre hardware (800 Go de pur kiff pour l'instant). 
-        Le but ? Proposer une alternative aux GAFAM. C'est hébergé en Suisse 🇨🇭.
-      </p>
-      
-      <ul class="features-list">
-        <li>1 Go Gratuit (avec un peu de pub pour payer le café)</li>
-        <li>Full Privacy : je regarde pas tes dossiers</li>
-        <li>Rapidité : API Nextcloud connectée en direct</li>
-      </ul>
+        <article class="info-card">
+          <h2 class="card-title">C'est quoi le délire ?</h2>
+          <p class="card-text">
+            J'ai monté ce serveur sur mon propre hardware (800 Go de pur kiff pour l'instant). 
+            Hébergé en Suisse 🇨🇭.
+          </p>
+          
+          <ul class="features-list">
+            <li>✅ 1 Go Gratuit (avec un peu de pub)</li>
+            <li>✅ Full Privacy : zéro regard indiscret</li>
+            <li>✅ Rapidité : API Nextcloud en direct</li>
+          </ul>
 
-      <div class="action-area">
-        <a href="/register" class="btn-primary">Démarrer mon Cloud</a>
+          <div class="action-area">
+            <a href="#pricing" class="btn-primary" id="btn-to-pricing">Démarrer mon Cloud</a>
+          </div>
+        </article>
       </div>
     </section>
 
+    {{-- Section Pricing --}}
+    <section class="stack-section pricing-section" id="pricing">
+      <div class="section-content">
+        <div class="pricing-header">
+          <h1>Choisis ton espace.</h1>
+          <p>Simple, efficace, suisse.</p>
+        </div>
+
+        <div class="pricing-grid">
+          @each(plan in plans)
+            <div class="plan-card {{ plan.highlight ? 'featured' : '' }}">
+              @if(plan.highlight)
+                <span class="badge">Recommandé</span>
+              @endif
+              <h3>{{ plan.name }}</h3>
+              <div class="price">
+                <span class="amount">{{ plan.price }} CHF</span>
+                <span class="period">/mois</span>
+              </div>
+              <p class="storage">{{ plan.storage }} de stockage</p>
+              <ul class="plan-features">
+                @each(feature in plan.features)
+                  <li>{{ feature }}</li>
+                @end
+              </ul>
+              <a href="{{ route('register') }}" class="plan-btn">{{ plan.cta }}</a>
+            </div>
+          @end
+        </div>
+      </div>
+    </section>
   </div>
+
+  {{-- Indicateur --}}
+  <div class="indicator-side">
+    <div class="sticky-track">
+      <div class="dot" id="dot-top"></div>
+      <div class="line"></div>
+      <div class="dot" id="dot-bottom"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const dotTop = document.getElementById('dot-top');
+  const dotBottom = document.getElementById('dot-bottom');
+  const heroSection = document.getElementById('hero-section');
+  const pricingSection = document.getElementById('pricing');
+
+  function updateScrollEffects() {
+    const scrollY = window.scrollY;
+    const windowHeight = window.innerHeight;
+    
+    // On accélère la disparition pour que le pricing monte plus vite visuellement
+    const opacity = 1 - (scrollY / (windowHeight * 0.5));
+    heroSection.style.opacity = Math.max(0, opacity);
+
+    const pricingRect = pricingSection.getBoundingClientRect();
+    if (pricingRect.top < windowHeight / 2 || window.location.hash === '#pricing') {
+      dotTop.classList.add('is-hollow');
+      dotBottom.classList.add('is-filled');
+    } else {
+      dotTop.classList.remove('is-hollow');
+      dotBottom.classList.remove('is-filled');
+    }
+  }
+
+  window.addEventListener('scroll', updateScrollEffects);
+  window.addEventListener('DOMContentLoaded', updateScrollEffects);
+</script>
 @end

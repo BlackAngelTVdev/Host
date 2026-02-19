@@ -7,19 +7,24 @@ import type { Authenticators } from '@adonisjs/auth/types'
  * access to unauthenticated users.
  */
 export default class AuthMiddleware {
-  /**
-   * The URL to redirect to, when authentication fails
-   */
-  redirectTo = '/login'
+  async handle(ctx: HttpContext, next: NextFn) {
+    const { session, response, params } = ctx
 
-  async handle(
-    ctx: HttpContext,
-    next: NextFn,
-    options: {
-      guards?: (keyof Authenticators)[]
-    } = {}
-  ) {
-    await ctx.auth.authenticateUsing(options.guards, { loginRoute: this.redirectTo })
+    // 1. Est-ce que le mec est connecté ?
+    const loggedInUser = session.get('user')
+
+    if (!loggedInUser) {
+      session.flash('error', 'Tu dois être connecté pour voir ça.')
+      return response.redirect().toRoute('register')
+    }
+
+    // 2. Est-ce qu'il essaie de voir le dashboard de quelqu'un d'autre ?
+    // On compare le pseudo en session avec celui dans l'URL
+    if (params.username && params.username !== loggedInUser.username) {
+      session.flash('error', "Ceci n'est pas ton dashboard, petit malin.")
+      return response.redirect().toRoute('dashboard', { username: loggedInUser.username })
+    }
+
     return next()
   }
 }

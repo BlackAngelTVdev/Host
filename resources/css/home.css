@@ -1,102 +1,249 @@
-/* resources/css/home.css */
-
-.home-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 60px;
-  align-items: center;
-  animation: fadeIn 0.8s ease-out;
+/* --- STRUCTURE GLOBALE --- */
+.page-split {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    background: transparent;
+    width: 100%;
 }
 
-/* Section Titre */
-.hero {
-  text-align: center;
+main {
+    max-width: 2200px;
+    margin: 0 auto;
+}
+
+.content-side {
+    width: 100%;
+}
+
+/* --- SECTIONS (STACKING) --- */
+.stack-section {
+    position: sticky;
+    top: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* CHANGEMENT ICI : On aligne en haut au lieu de centrer */
+    justify-content: flex-start; 
+    /* On réduit le padding du haut pour coller au header */
+    padding: 20px 40px 40px 40px; 
+    box-sizing: border-box;
+
+}
+
+#hero-section { 
+    z-index: 1; 
+}
+
+#pricing { 
+    z-index: 2; 
+    /* On ajoute un padding top un peu plus grand ici pour pas que le titre 
+       "Choisis ton espace" soit trop collé quand il arrive */
+    padding-top: 60px;
+
+}
+
+/* --- HERO WRAPPER (MONTE LE CONTENU) --- */
+.home-wrapper {
+    display: flex;
+    flex-direction: column;
+    /* Réduction de l'espace entre LaxaCube et la carte */
+    gap: 30px; 
+    align-items: center;
+    animation: fadeIn 0.8s ease-out;
+    width: 100%;
+    /* On peut ajouter un margin-top négatif si on veut vraiment forcer */
+    margin-top: 20px; 
+}
+
+.hero { 
+    text-align: center;
+    background-color: transparent; 
+    display: flex;
+    flex-direction: column;
+    border: none;
 }
 
 .hero-title {
-  font-size: 5rem;
-  font-weight: 900;
-  margin-bottom: 10px;
-  /* On utilise le dégradé défini en global */
-  background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+    font-size: clamp(3.5rem, 10vw, 5.5rem); /* Taille adaptative */
+    font-weight: 900;
+    margin-bottom: 0px;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.1;
 }
 
 .hero-subtitle {
-  font-size: 1.5rem;
-  color: var(--text-secondary);
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    margin-top: 10px;
 }
 
-/* La carte centrale */
+/* --- CARTE INFO --- */
 .info-card {
-  background: var(--bg-surface);
-  padding: 50px;
-  border-radius: 24px;
-  border: 1px solid var(--border-color);
-  max-width: 800px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    background: var(--bg-surface);
+    padding: 35px 50px; /* Un peu moins de padding vertical */
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    max-width: 800px;
+    width: 90%;
+    text-align: left;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
 }
 
 .card-title {
-  font-size: 2rem;
-  color: var(--accent);
-  margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: var(--accent);
+    margin-bottom: 15px;
 }
 
 .card-text {
-  font-size: 1.1rem;
-  color: var(--text-primary);
-  line-height: 1.8;
-  margin-bottom: 30px;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    line-height: 1.7;
+    margin-bottom: 25px;
 }
 
-/* Liste à puces custom */
 .features-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .features-list li {
-  display: flex;
-  align-items: center;
-  font-size: 1.05rem;
-  color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    font-size: 1.05rem;
+    color: var(--text-secondary);
 }
 
 .features-list li::before {
-  content: "✅";
-  margin-right: 15px;
-}
-
-/* Zone d'action */
-.action-area {
-  margin-top: 40px;
-  text-align: center;
+    margin-right: 15px;
 }
 
 .btn-primary {
-  display: inline-block;
-  background: var(--accent);
-  color: white;
-  text-decoration: none;
-  padding: 16px 40px;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 10px 20px var(--accent-glow);
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    text-decoration: none;
+    padding: 14px 35px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.2s;
+    box-shadow: 0 10px 20px var(--accent-glow);
 }
 
 .btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 30px var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px var(--accent);
 }
 
-/* Animation d'entrée */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+/* --- PRICING SECTION --- */
+.pricing-header { 
+    text-align: center; 
+    margin-bottom: 3rem; 
 }
+
+.pricing-header h1 { 
+    font-size: 3.5rem; 
+    font-weight: 900; 
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    align-items: stretch;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.plan-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.plan-card.featured {
+    border-color: var(--accent);
+    box-shadow: 0 0 30px var(--accent-glow);
+    transform: scale(1.03);
+}
+
+.badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: white;
+}
+
+.amount { font-size: 3rem; font-weight: 800; }
+.storage { color: var(--accent); font-weight: 600; margin-bottom: 2rem; }
+
+.plan-btn {
+    display: block;
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.featured .plan-btn { background: var(--accent); border: none; }
+
+/* --- INDICATEUR --- */
+.indicator-side { z-index: 10; }
+
+.sticky-track {
+    position: sticky;
+    top: 25vh;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.line {
+    width: 2px;
+    flex-grow: 1;
+    background: repeating-linear-gradient(to bottom, var(--accent) 0, var(--accent) 5px, transparent 5px, transparent 10px);
+    opacity: 0.2;
+}
+
+.dot { 
+    width: 24px; 
+    height: 24px; 
+    border-radius: 50%; 
+    border: 2px solid var(--accent); 
+    transition: 0.4s; 
+}
+
+#dot-top { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+.dot.is-hollow { background: transparent !important; box-shadow: none !important; }
+.dot.is-filled { background: var(--accent) !important; box-shadow: 0 0 15px var(--accent) !important; }
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+html { scroll-behavior: smooth; }

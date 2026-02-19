@@ -1,0 +1,44 @@
+@layout({ css: 'pages/dashboard' })
+<div class="dashboard-wrapper">
+  <div class="panel-card">
+    
+    <div class="dashboard-header">
+      <div class="user-info">
+        <h2>Bienvenue, {{ username }}</h2>
+        <p class="email-tag">{{ user.email }}</p>
+      </div>
+      <a href="https://cloud.laxacube.ch" target="_blank" class="btn-cloud-access">
+        Ouvrir mon espace ☁️
+      </a>
+    </div>
+
+    <div class="stats-container">
+      <div class="storage-chart">
+        {{-- Le graph circulaire --}}
+        <div class="progress-circle" style="--percent: {{ user.percent }}">
+          <div class="inner-content">
+            <span class="usage">{{ user.percent }}%</span>
+            <span class="label">Utilisé</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="storage-text">
+        <h3>État du stockage</h3>
+        <p class="storage-numbers">
+          <span class="highlight">{{ user.used }} GB</span> utilisés sur <strong>{{ user.total }} GB</strong>
+        </p>
+      </div>
+    </div>
+
+    <div class="upgrade-banner">
+      <div class="upgrade-text">
+        <h4>Manque de place ?</h4>
+        <p>Passe à la vitesse supérieure pour seulement quelques CHF.</p>
+      </div>
+      <a href="{{ route('pricing') }}" class="btn-upgrade">Voir les offres</a>
+    </div>
+
+  </div>
+</div>
+@end
