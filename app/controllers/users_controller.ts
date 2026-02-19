@@ -46,4 +46,29 @@ export default class UsersController {
     // Retour à l'accueil
     return response.redirect().toRoute('home')
   }
+  // Affiche la page de login
+  async login({ view }: HttpContext) {
+    return view.render('pages/auth/login')
+  }
+
+  // Traite la connexion
+  async handleLogin({ request, response, session }: HttpContext) {
+    const { username, password } = request.only(['username', 'password'])
+
+    // On utilise une nouvelle méthode du service pour check l'auth
+    const result = await this.nextcloudService.checkAuth(username, password)
+
+    if (result.success) {
+      // On remplit la session comme pour le register
+      session.put('user', {
+        username: username,
+        email: result.userData.email, // On récupère l'email direct de Nextcloud
+      })
+
+      return response.redirect().toRoute('dashboard', { username: username })
+    }
+
+    session.flash('error', 'Identifiants invalides sur Nextcloud')
+    return response.redirect().back()
+  }
 }

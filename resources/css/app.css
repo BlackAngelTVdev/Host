@@ -1,8 +1,6 @@
 @import url(./var.css);
 
-
-
-
+/* --- RESET & BASE --- */
 * {
     margin: 0;
     padding: 0;
@@ -17,7 +15,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Background Effect (Le petit plus qui fait pro) */
+/* Background Effect (Grille + Glow) */
 body::after {
     content: "";
     position: fixed;
@@ -30,12 +28,12 @@ body::after {
     z-index: -1;
 }
 
-/* Header */
+/* --- HEADER & NAVIGATION --- */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem 10%;
+    padding: 1rem 10%;
     background: rgba(5, 5, 8, 0.8);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
@@ -44,86 +42,160 @@ header {
     z-index: 1000;
 }
 
+.logo-link {
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.logo-link:hover {
+    transform: scale(1.05);
+}
+
 .logo {
-    cursor: pointer;
     font-size: 1.5rem;
     font-weight: 900;
     letter-spacing: -1px;
     background: linear-gradient(to right, #fff, var(--accent));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    cursor: default;
 }
 
 nav {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
-nav a {
+/* Liens classiques (Login, Mon Panel) */
+.nav-link {
     color: var(--text-muted);
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 500;
-    transition: all 0.3s ease;
+    transition: color 0.3s ease;
 }
 
-nav a:hover {
-    color: var(--text-primary);
+.nav-link:hover {
+    color: var(--accent);
 }
 
-/* Le bouton CTA "Créer un compte" */
+/* Boutons CTA (Register, Logout) */
 .nav-cta {
+    display: inline-block;
     background: var(--text-primary);
     color: var(--bg-color) !important;
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
+    padding: 0.6rem 1.4rem;
+    border-radius: 8px;
     font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
     border: 1px solid var(--text-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
 }
 
 .nav-cta:hover {
     background: transparent;
     color: var(--text-primary) !important;
-    box-shadow: 0 0 15px var(--accent-glow);
+    box-shadow: 0 0 20px var(--accent-glow);
+    transform: translateY(-1px);
 }
 
-/* Layout Main */
+/* Logout Spécifique (Rouge) */
+.nav-cta.logout-btn {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid #ef4444;
+    color: #ef4444 !important;
+}
+
+.nav-cta.logout-btn:hover {
+    background: #ef4444;
+    color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+/* --- MAIN LAYOUT --- */
 main {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 4rem 2rem;
+    padding: 2rem;
 }
 
+/* Cartes génériques */
 .card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 2rem;
-}
-.logo-link {
-    text-decoration: none;
-    display: inline-block;
-    transition: transform 0.2s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-.nav-cta.logout-btn {
-    background: #ef4444; /* Rouge plein */
-    border: 1px solid #ef4444;
-    color: #ffffff !important; /* Texte blanc forcé */
-    cursor: pointer;
-    font-family: inherit;
-    font-weight: 700;
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+/* Utilitaires */
+.text-accent { color: var(--accent); }
+.text-muted { color: var(--text-muted); }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    header {
+        padding: 1rem 5%;
+    }
+    nav {
+        gap: 1rem;
+    }
+    .nav-link {
+        display: none; /* Cache les liens textes sur mobile pour garder les boutons */
+    }
+}/* --- TOAST NOTIFICATIONS --- */
+#toast-container {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 9999;
 }
 
+.toast {
+    position: relative;
+    min-width: 300px;
+    background: rgba(15, 15, 20, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.5s ease;
+}
 
-.nav-link {
-    margin-right: 15px;
-    text-decoration: none;
+.toast-success { border-left: 4px solid #10b981; }
+.toast-error { border-left: 4px solid #ef4444; }
+
+.toast-content {
+    font-size: 0.9rem;
     font-weight: 500;
-    color: var(--text-primary);
+}
+
+/* La barre qui défile */
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background: var(--accent);
+    animation: progress 5s linear forwards;
+}
+
+.toast-error .toast-progress { background: #ef4444; }
+.toast-success .toast-progress { background: #10b981; }
+
+@keyframes slideIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes progress {
+    from { width: 100%; }
+    to { width: 0%; }
 }

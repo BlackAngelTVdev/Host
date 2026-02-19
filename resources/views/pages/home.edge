@@ -1,9 +1,10 @@
 @layout({ css: 'home' })
+
 <div class="page-split">
   <div class="content-side">
-    
-    {{-- Section Hero : On réduit l'espace ici --}}
-    <section class="stack-section hero-container" id="hero-section">
+
+    {{-- ===== SECTION 1 : HERO ===== --}}
+    <section class="stack-section" id="hero-section">
       <div class="home-wrapper">
         <header class="hero">
           <h1 class="hero-title">LaxaCube.</h1>
@@ -13,25 +14,24 @@
         <article class="info-card">
           <h2 class="card-title">C'est quoi le délire ?</h2>
           <p class="card-text">
-            J'ai monté ce serveur sur mon propre hardware (800 Go de pur kiff pour l'instant). 
+            J'ai monté ce serveur sur mon propre hardware (800 Go de pur kiff pour l'instant).
             Hébergé en Suisse 🇨🇭.
           </p>
-          
           <ul class="features-list">
             <li>✅ 1 Go Gratuit (avec un peu de pub)</li>
             <li>✅ Full Privacy : zéro regard indiscret</li>
             <li>✅ Rapidité : API Nextcloud en direct</li>
           </ul>
-
           <div class="action-area">
-            <a href="#pricing" class="btn-primary" id="btn-to-pricing">Démarrer mon Cloud</a>
+            {{-- Ce bouton déclenche le scroll vers le pricing --}}
+            <button class="btn-primary" id="btn-to-pricing">Démarrer mon Cloud</button>
           </div>
         </article>
       </div>
     </section>
 
-    {{-- Section Pricing --}}
-    <section class="stack-section pricing-section" id="pricing">
+    {{-- ===== SECTION 2 : PRICING ===== --}}
+    <section class="stack-section" id="pricing">
       <div class="section-content">
         <div class="pricing-header">
           <h1>Choisis ton espace.</h1>
@@ -55,49 +55,177 @@
                   <li>{{ feature }}</li>
                 @end
               </ul>
-              <a href="{{ route('register') }}" class="plan-btn">{{ plan.cta }}</a>
+              <a href="{{ route('auth.register') }}" class="plan-btn">{{ plan.cta }}</a>
             </div>
           @end
         </div>
+
+        {{-- Bouton pour remonter au hero --}}
+        <button class="back-to-top" id="btn-to-hero">
+          ↑ Retour en haut
+        </button>
+
       </div>
     </section>
+
   </div>
 
-  {{-- Indicateur --}}
+  {{-- ===== BARRE LATÉRALE ===== --}}
   <div class="indicator-side">
     <div class="sticky-track">
-      <div class="dot" id="dot-top"></div>
+      <div class="dot is-filled" id="dot-top"   title="Accueil"></div>
       <div class="line"></div>
-      <div class="dot" id="dot-bottom"></div>
+      <div class="dot is-hollow" id="dot-bottom" title="Tarifs"></div>
     </div>
   </div>
 </div>
 
 <script>
-  const dotTop = document.getElementById('dot-top');
+document.addEventListener('DOMContentLoaded', () => {
+
+  // ── Éléments ──────────────────────────────────────────────
+  const hero      = document.getElementById('hero-section');
+  const pricing   = document.getElementById('pricing');
+  const dotTop    = document.getElementById('dot-top');
   const dotBottom = document.getElementById('dot-bottom');
-  const heroSection = document.getElementById('hero-section');
-  const pricingSection = document.getElementById('pricing');
+  const btnDown   = document.getElementById('btn-to-pricing');
+  const btnUp     = document.getElementById('btn-to-hero');
 
-  function updateScrollEffects() {
-    const scrollY = window.scrollY;
-    const windowHeight = window.innerHeight;
-    
-    // On accélère la disparition pour que le pricing monte plus vite visuellement
-    const opacity = 1 - (scrollY / (windowHeight * 0.5));
-    heroSection.style.opacity = Math.max(0, opacity);
+  // ── État ──────────────────────────────────────────────────
+  // false = on est sur le hero, true = on est sur le pricing
+  let onPricing = false;
+  let isAnimating = false; // Bloque les actions pendant l'animation
 
-    const pricingRect = pricingSection.getBoundingClientRect();
-    if (pricingRect.top < windowHeight / 2 || window.location.hash === '#pricing') {
+  // ── Fonctions principales ─────────────────────────────────
+
+  function goToPricing() {
+    if (isAnimating || onPricing) return;
+    isAnimating = true;
+    onPricing = true;
+
+    // 1. Le hero part vers le haut
+    hero.classList.add('slide-out-up');
+
+    // 2. Le pricing monte depuis le bas (légèrement en décalé = effet sympa)
+    setTimeout(() => {
+      pricing.classList.remove('slide-out-down'); // Reset si on revient
+      pricing.classList.add('slide-in-up');
+    }, 100);
+
+    // 3. Mise à jour des dots
+    updateDots();
+
+    // 4. Libère le verrou après l'animation (700ms = durée CSS)
+    setTimeout(() => { isAnimating = false; }, 750);
+  }
+
+  function goToHero() {
+    if (isAnimating || !onPricing) return;
+    isAnimating = true;
+    onPricing = false;
+
+    // 1. Le pricing repart vers le bas
+    pricing.classList.remove('slide-in-up');
+    pricing.classList.add('slide-out-down');
+
+    // 2. Le hero redescend
+    setTimeout(() => {
+      hero.classList.remove('slide-out-up');
+    }, 100);
+
+    updateDots();
+
+    setTimeout(() => { isAnimating = false; }, 750);
+  }
+
+  function updateDots() {
+    if (onPricing) {
+      dotTop.classList.remove('is-filled');
       dotTop.classList.add('is-hollow');
+      dotBottom.classList.remove('is-hollow');
       dotBottom.classList.add('is-filled');
     } else {
       dotTop.classList.remove('is-hollow');
+      dotTop.classList.add('is-filled');
       dotBottom.classList.remove('is-filled');
+      dotBottom.classList.add('is-hollow');
     }
   }
 
-  window.addEventListener('scroll', updateScrollEffects);
-  window.addEventListener('DOMContentLoaded', updateScrollEffects);
+  // ── Événements ────────────────────────────────────────────
+
+  // Boutons dans le contenu
+  btnDown.addEventListener('click', goToPricing);
+  btnUp.addEventListener('click', goToHero);
+
+  // Dots latéraux
+  dotTop.addEventListener('click', goToHero);
+  dotBottom.addEventListener('click', goToPricing);
+
+  // Molette de la souris
+  window.addEventListener('wheel', (e) => {
+    if (isAnimating) return;
+    if (e.deltaY > 30) {
+      goToPricing(); // Scroll bas → pricing
+    } else if (e.deltaY < -30) {
+      goToHero();    // Scroll haut → hero
+    }
+  }, { passive: true });
+
+  // Support tactile (mobile)
+  let touchStartY = 0;
+  window.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  window.addEventListener('touchend', (e) => {
+    if (isAnimating) return;
+    const delta = touchStartY - e.changedTouches[0].clientY;
+    if (delta > 50) {
+      goToPricing();
+    } else if (delta < -50) {
+      goToHero();
+    }
+  }, { passive: true });
+
+  // Touche clavier (accessibilité)
+  window.addEventListener('keydown', (e) => {
+    if (isAnimating) return;
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') goToPricing();
+    if (e.key === 'ArrowUp'   || e.key === 'PageUp')   goToHero();
+  });
+
+  // ── Gestion de l'URL #pricing ─────────────────────────────
+  // Si l'URL contient #pricing au chargement, on va direct dessus
+  if (window.location.hash === '#pricing') {
+    // On saute l'animation pour aller direct
+    onPricing = true;
+    hero.classList.add('slide-out-up');
+    pricing.classList.add('slide-in-up');
+    updateDots();
+  }
+
+  // Écoute les changements de hash en cours de navigation
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash === '#pricing' && !onPricing) {
+      goToPricing();
+    } else if (window.location.hash !== '#pricing' && onPricing) {
+      goToHero();
+    }
+  });
+
+  // Met à jour le hash selon la section (pour partager le lien)
+  function updateHash() {
+    const newHash = onPricing ? '#pricing' : '#';
+    // On utilise replaceState pour ne pas polluer l'historique
+    history.replaceState(null, '', newHash === '#' ? window.location.pathname : newHash);
+  }
+
+  // Appel updateHash après chaque navigation
+  btnDown.addEventListener('click', () => setTimeout(updateHash, 800));
+  btnUp.addEventListener('click', () => setTimeout(updateHash, 800));
+
+});
 </script>
+
 @end

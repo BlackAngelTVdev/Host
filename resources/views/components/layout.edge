@@ -17,26 +17,49 @@
 
 <body>
     <header>
-    <a href="{{ route('home') }}" class="logo-link">
-        <div class="logo">LX CLOUD</div>
-    </a>
-    <nav>
+        <a href="{{ route('home') }}" class="logo-link">
+            <div class="logo">LX CLOUD</div>
+        </a>
+        <nav>
+            @if(session.has('user'))
+            {{-- Connecté --}}
+            <a href="{{ route('dashboard', { username: session.get('user').username }) }}" class="nav-link">Mon
+                Panel</a>
 
-        @if(session.has('user'))
-            {{-- Si l'utilisateur est connecté --}}
-            <a href="{{ route('dashboard', { username: session.get('user').username }) }}" class="nav-link">Mon Panel</a>
-            
             <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                 {{ csrfField() }}
                 <button type="submit" class="nav-cta logout-btn">Déconnexion</button>
             </form>
-        @else
-            {{-- Si l'utilisateur n'est pas connecté --}}
-            <a href="{{ route('register') }}" class="nav-cta">Créer un compte</a>
-        @endif
-    </nav>
-</header>
+            @else
+            {{-- Pas connecté --}}
+            <a href="{{ route('auth.login') }}" class="nav-link">Connexion</a>
+            <a href="{{ route('auth.register') }}" class="nav-cta">Créer un compte</a>
+            @endif
+        </nav>
+    </header>
+    {{-- Système de Flash Messages --}}
+@if(flashMessages.has('success') || flashMessages.has('error'))
+  <div id="toast-container">
+    <div class="toast {{ flashMessages.has('success') ? 'toast-success' : 'toast-error' }}">
+      <div class="toast-content">
+        {{ flashMessages.get('success') || flashMessages.get('error') }}
+      </div>
+      <div class="toast-progress"></div>
+    </div>
+  </div>
 
+  <script>
+    const toast = document.querySelector('.toast');
+    if (toast) {
+      // Supprime le toast après 5 secondes
+      setTimeout(() => {
+        toast.style.transform = 'translateX(120%)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 500);
+      }, 5000);
+    }
+  </script>
+@endif
     <main>
         {{{ await $slots.main() }}}
     </main>

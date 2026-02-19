@@ -1,0 +1,36 @@
+@layout({ css: 'auth/login' })
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <h1>Bon retour !</h1>
+        <p>Connecte-toi pour gérer ton espace.</p>
+      </div>
+
+      <form action="{{ route('auth.login.store') }}" method="POST" class="login-form">
+        {{ csrfField() }}
+
+        {{-- Username --}}
+        <div class="input-group">
+          <label for="username">Nom d'utilisateur</label>
+          <input type="text" id="username" name="username" placeholder="Pseudo" required>
+        </div>
+
+        {{-- Password --}}
+        <div class="input-group">
+          <label for="password">Mot de passe</label>
+          <input type="password" id="password" name="password" placeholder="••••••••" required>
+        </div>
+
+        @if(flashMessages.has('error'))
+          <p class="error-msg">{{ flashMessages.get('error') }}</p>
+        @endif
+
+        <button type="submit" class="btn-submit">Se connecter</button>
+      </form>
+
+      <div class="login-footer">
+        <p>Pas encore membre ? <a href="{{ route('auth.register') }}">Créer un compte</a></p>
+      </div>
+    </div>
+  </div>
+@end
