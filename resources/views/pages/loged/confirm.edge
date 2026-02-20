@@ -1,0 +1,32 @@
+@layout({ css: 'pages/confirm' })
+
+<div class="confirm-container">
+    {{-- On utilise 'user' car c'est ce qu'on a partagé dans le middleware --}}
+    <h1>Presque là, {{ user?.username || 'l\'ami' }} !</h1>
+
+    <div class="plan-card">
+        <h2>Abonnement {{ plan.name }}</h2>
+        <p>Tu vas débloquer : <strong>{{ plan.storage }}</strong> de stockage sur ton Nextcloud.</p>
+        <p>Prix : <strong>{{ plan.price }} {{ plan.currency || 'CHF' }} / mois</strong></p>
+
+        <hr>
+
+        <p class="small">En cliquant sur le bouton ci-dessous, tu seras redirigé vers Stripe pour finaliser ton paiement
+            sécurisé.</p>
+
+        {{-- <form action="{{ route('checkout.createSession') }}" method="POST">
+            {{ csrfField() }}
+            <input type="hidden" name="planName" value="{{ plan.name }}">
+            <button type="submit" class="btn-stripe">
+                Confirmer et Payer
+            </button>
+        </form> --}}
+
+        {{-- Ici aussi, on utilise user.username --}}
+        {{-- On récupère le username directement de la session pour éviter le crash --}}
+        <a href="{{ route('dashboard', { username: session.get('user').username }) }}">
+            Annuler et retourner au dashboard
+        </a>
+    </div>
+</div>
+@end

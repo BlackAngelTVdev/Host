@@ -172,7 +172,6 @@ export default class NextcloudService {
     }
 
     for (const plan of plans) {
-      // 1. Calcul selon le hardware (ex: 190 places physiques)
       const physicalAvailable = Math.floor(freeSpaceGb / plan.quotaGb)
 
       // 2. Ta limite commerciale (ex: 100 places)

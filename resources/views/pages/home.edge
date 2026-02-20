@@ -43,7 +43,9 @@
 
         <div class="pricing-grid">
           @each(plan in plans)
-            {{-- On ajoute la classe 'inactive' si isActive est false --}}
+            {{-- On définit si l'utilisateur est connecté --}}
+            @let(isConnected = !!user)
+
             <div class="plan-card {{ plan.isFeatured ? 'featured' : '' }} {{ !plan.isActive ? 'inactive' : '' }}">
               
               @if(plan.isActive && plan.isFeatured)
@@ -70,25 +72,36 @@
                 @end
               </ul>
 
-              {{-- Logique du bouton --}}
-              @if(!plan.isActive)
-                <button class="plan-btn" disabled>Indisponible pour le moment</button>
-              @elseif(plan.stockAvailable > 0)
-                <a href="{{ route('auth.register', { plan: plan.id }) }}" class="plan-btn">
-                  {{ plan.price === 0 ? 'Démarrer' : 'Choisir ce plan' }}
-                </a>
-              @else
-                <button class="plan-btn" disabled>Plus de stock</button>
-              @endif
+              {{-- LOGIQUE DU BOUTON --}}
+              <div class="plan-actions">
+                @if(!plan.isActive)
+                
+                @elseif(plan.stockAvailable > 0)
+                  {{-- Destination dynamique : confirm si connecté, register sinon --}}
+                  @let(url = isConnected 
+                    ? route('checkout.confirm', { plan: plan.id }) 
+                    : route('auth.register', { plan: plan.id })
+                  )
 
-              {{-- Stock uniquement si actif --}}
+                  <a href="{{ url }}" class="plan-btn">
+                    @if(plan.price === 0)
+                      Démarrer
+                    @else
+                      {{ isConnected ? (plan.id === 1 ? 'Plan de base' : 'Améliorer mon offre') : 'Choisir ce plan' }}
+                    @endif
+                  </a>
+                @else
+                  <button class="plan-btn" disabled>Plus de stock</button>
+                @endif
+              </div>
 
-                <p style="color: var(--accent); font-size: 0.75rem; margin-top: 10px; text-align: center; font-weight: bold;">
-                  {{ plan.stockAvailable }} places disponibles
-                </p>
+              <p style="color: var(--accent); font-size: 0.75rem; margin-top: 10px; text-align: center; font-weight: bold;">
+                {{ plan.stockAvailable }} places disponibles
+              </p>
             </div>
           @end
         </div>
+
 
         <button class="back-to-top" id="btn-to-hero">
           ↑ Retour en haut
