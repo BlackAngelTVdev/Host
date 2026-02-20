@@ -87,25 +87,51 @@ export default class NextcloudService {
   }
   // app/services/nextcloud_service.ts
 
-  public async checkAuth(username: string, password: string) {
-  const cloudUrl = env.get('NEXTCLOUD_URL')
-  const auth = Buffer.from(`${username}:${password}`).toString('base64')
+  public async checkAuth(identifier: string, password: string) {
+    const cloudUrl = env.get('NEXTCLOUD_URL')
+    const adminUser = env.get('NEXTCLOUD_ADMIN_USER')
+    const adminPass = env.get('NEXTCLOUD_ADMIN_PASS')
+    const adminAuth = Buffer.from(`${adminUser}:${adminPass}`).toString('base64')
 
-  try {
-    const response = await fetch(`${cloudUrl}/ocs/v1.php/cloud/user?format=json`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Basic ${auth}`,
-        'OCS-APIRequest': 'true',
+    let username = identifier
+
+    // Si l'identifiant ressemble à un email, on cherche le vrai username
+    if (identifier.includes('@')) {
+      try {
+        const searchRes = await fetch(
+          `${cloudUrl}/ocs/v1.php/cloud/users?search=${identifier}&format=json`,
+          {
+            headers: { 'Authorization': `Basic ${adminAuth}`, 'OCS-APIRequest': 'true' },
+          }
+        )
+        const searchData = await searchRes.json()
+        const users = searchData.ocs.data.users
+        if (users && users.length > 0) {
+          username = users[0] // On prend le premier utilisateur trouvé
+        }
+      } catch (e) {
+        return { success: false }
       }
-    })
-    const data = await response.json()
-    return { 
-      success: data.ocs.meta.statuscode === 100, 
-      userData: data.ocs.data 
     }
-  } catch (e) {
-    return { success: false }
+
+    // Maintenant on tente la connexion avec le username (trouvé ou d'origine)
+    const auth = Buffer.from(`${username}:${password}`).toString('base64')
+    try {
+      const response = await fetch(`${cloudUrl}/ocs/v1.php/cloud/user?format=json`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'OCS-APIRequest': 'true',
+        },
+      })
+      const data = await response.json()
+      return {
+        success: data.ocs.meta.statuscode === 100,
+        userData: data.ocs.data,
+        realUsername: username, // On renvoie le vrai username pour la session
+      }
+    } catch (e) {
+      return { success: false }
+    }
   }
-}
 }

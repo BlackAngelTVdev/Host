@@ -386,7 +386,25 @@ main{
 /* ============================================
    RESPONSIVE
    ============================================ */
+/* Style pour les plans désactivés */
+.plan-card.inactive {
+    opacity: 0.6;
+    filter: grayscale(0.5);
+    border-color: #333; /* Bordure plus sombre */
+    cursor: not-allowed;
+}
 
+.plan-card.inactive .plan-btn {
+    background: rgba(255, 255, 255, 0.05);
+    color: #666;
+    border-color: #444;
+}
+
+/* On enlève l'effet de scale sur les inactifs même si c'était le featured */
+.plan-card.inactive:hover {
+    transform: none;
+    box-shadow: none;
+}
 @media (max-width: 768px) {
     .info-card { padding: 25px 20px; }
     .stack-section { padding: 40px 20px; }
