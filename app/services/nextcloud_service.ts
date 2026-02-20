@@ -27,7 +27,7 @@ export default class NextcloudService {
     password: string,
     email: string,
     quota = '5GB',
-    group = 'Gratuit'
+    group = 'Free'
   ) {
     try {
       const response = await fetch(`${this.cloudUrl}/ocs/v1.php/cloud/users?format=json`, {

@@ -2,26 +2,11 @@ import NextcloudService from '#services/nextcloud_service'
 import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 import Plan from '#models/plan'
+import { registerValidator } from '#validators/user'
 
 @inject()
 export default class UsersController {
   constructor(protected nextcloudService: NextcloudService) {}
-
-  /**
-   * Rafraîchit les stocks selon le hardware. 
-   * À appeler manuellement (via une route admin ou le HomeController)
-   */
-  private async refreshPlansStock() {
-    const freeSpaceGb = await this.nextcloudService.getServerFreeSpace()
-    const plans = await Plan.all()
-
-    for (const plan of plans) {
-      const physicalAvailable = Math.floor(freeSpaceGb / plan.quotaGb)
-      plan.stockAvailable = physicalAvailable
-      plan.isActive = physicalAvailable > 0 && plan.name !== 'Ultra'
-      await plan.save()
-    }
-  }
 
   // Affiche le formulaire
   async register({ view }: HttpContext) {
@@ -32,46 +17,53 @@ export default class UsersController {
    * Création de compte avec décrémentation manuelle
    */
   async store({ request, response, session }: HttpContext) {
-    const data = request.only(['username', 'email', 'password'])
+    try {
+      // 1. Validation (Mails jetables + format)
+      const data = await request.validateUsing(registerValidator)
 
-    // 1. On cherche le plan Gratuit
-    const freePlan = await Plan.query()
-      .where('name', 'Gratuit')
-      .where('isActive', true)
-      .first()
+      // 2. Check Stock
+      const freePlan = await Plan.query().where('name', 'Gratuit').where('isActive', true).first()
 
-    // 2. Vérification du stock restant
-    if (!freePlan || freePlan.stockAvailable <= 0) {
-      session.flash('error', "Désolé, il n'y a plus de places 'Gratuit' disponibles.")
-      return response.redirect().back()
-    }
-
-    // 3. Création sur Nextcloud
-    const result = await this.nextcloudService.createUser(
-      data.username,
-      data.password,
-      data.email
-    )
-
-    if (result.success) {
-      // 4. ON ENLÈVE 1 AU STOCK "FREE" POUR ÊTRE SUR
-      freePlan.stockAvailable = freePlan.stockAvailable - 1
-      
-      // Si on arrive à 0, on désactive le plan
-      if (freePlan.stockAvailable <= 0) {
-        freePlan.isActive = false
+      if (!freePlan || freePlan.stockAvailable <= 0) {
+        session.flash('error', "Désolé, il n'y a plus de places disponibles.")
+        return response.redirect().back()
       }
-      
-      await freePlan.save()
 
-      session.put('user', { username: data.username, email: data.email })
-      return response.redirect().toRoute('dashboard', { username: data.username })
+      // 3. Création Nextcloud
+      const result = await this.nextcloudService.createUser(
+        data.username,
+        data.password,
+        data.email
+      )
+
+      if (result.success) {
+        // 4. Update Stock
+        freePlan.stockAvailable -= 1
+        if (freePlan.stockAvailable <= 0) freePlan.isActive = false
+        await freePlan.save()
+
+        session.put('user', { username: data.username, email: data.email })
+        return response.redirect().toRoute('dashboard', { username: data.username })
+      }
+
+      // Erreur venant de Nextcloud (ex: user déjà existant)
+      session.flash('error', result.message)
+      return response.redirect().back()
+    } catch (error) {
+      // --- MODIFICATION ICI ---
+      if (error.messages && Array.isArray(error.messages)) {
+        // On prend le premier message d'erreur de VineJS pour l'afficher en flash
+        session.flash('error', error.messages[0].message)
+      } else {
+        session.flash('error', 'Une erreur inattendue est survenue.')
+      }
+
+      session.flashAll()
+      console.error('Validation failed:', error.messages)
+      return response.redirect().back()
+      // --- FIN MODIFICATION ---
     }
-
-    session.flash('error', result.message)
-    return response.redirect().back()
   }
-
   async dashboard({ params, view }: HttpContext) {
     const userData = await this.nextcloudService.getUserData(params.username)
     if (!userData.success) {
