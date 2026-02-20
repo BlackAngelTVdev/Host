@@ -9,11 +9,19 @@ export default class HomeController {
   constructor(protected nextcloudService: NextcloudService) {}
 
   async index({ view, session }: HttpContext) {
-    // 1. On récupère l'user de la session (s'il existe)
+    // 1. MISE À JOUR DES STOCKS (C'est ça qui manquait !)
+    // On appelle la méthode de ton service qui check les groupes Nextcloud
+    try {
+      await this.nextcloudService.refreshPlansStock()
+    } catch (error) {
+      console.error('Erreur lors du refresh des stocks:', error)
+      // On continue quand même pour ne pas crash la page si Nextcloud est down
+    }
+
+    // 2. On récupère l'user de la session
     const loggedInUser = session.get('user')
     let userData = null
 
-    // 2. Si on a un user en session, on récupère ses infos Nextcloud (groupes, etc.)
     if (loggedInUser) {
       try {
         const result = await this.nextcloudService.getUserData(loggedInUser.username)
@@ -23,13 +31,12 @@ export default class HomeController {
       }
     }
 
-    // 3. On récupère les plans
+    // 3. On récupère les plans (maintenant mis à jour en DB)
     const plans = await Plan.query().orderBy('price', 'asc')
 
-    // 4. On envoie TOUT à la vue explicitement
     return view.render('pages/home', { 
       plans, 
-      user: userData // On force le passage de la variable 'user'
+      user: userData 
     })
   }
 }

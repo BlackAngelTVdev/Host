@@ -75,21 +75,26 @@
               {{-- LOGIQUE DU BOUTON --}}
               <div class="plan-actions">
                 @if(!plan.isActive)
-                
+                  {{-- Section inactive --}}
                 @elseif(plan.stockAvailable > 0)
-                  {{-- Destination dynamique : confirm si connecté, register sinon --}}
+                  
+                  @let(isConnected = !!user)
+                  {{-- On récupère le pseudo de la session de manière ultra-sécurisée --}}
+                  @let(loggedUsername = session.get('user')?.username)
+
                   @let(url = isConnected 
-                    ? route('checkout.confirm', { plan: plan.id }) 
+                    ? (plan.id === 1 && loggedUsername ? route('dashboard', { username: loggedUsername }) : route('checkout.confirm', { plan: plan.id })) 
                     : route('auth.register', { plan: plan.id })
                   )
 
                   <a href="{{ url }}" class="plan-btn">
-                    @if(plan.price === 0)
-                      Démarrer
+                    @if(plan.id === 1)
+                      {{ isConnected ? 'Accéder au Dashboard' : 'Démarrer gratuitement' }}
                     @else
-                      {{ isConnected ? (plan.id === 1 ? 'Plan de base' : 'Améliorer mon offre') : 'Choisir ce plan' }}
+                      {{ isConnected ? 'Améliorer mon offre' : 'Choisir ce plan' }}
                     @endif
                   </a>
+
                 @else
                   <button class="plan-btn" disabled>Plus de stock</button>
                 @endif
