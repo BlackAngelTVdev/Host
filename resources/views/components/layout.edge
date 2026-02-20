@@ -2,43 +2,44 @@
 <html lang="fr">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LaxaCube | Cloud Suisse</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LaxaCube | Cloud Suisse</title>
 
-    {{-- On charge toujours le CSS global --}}
-    @vite(['resources/css/app.css'])
+  {{-- On charge toujours le CSS global --}}
+  @vite(['resources/css/app.css'])
 
-    {{-- On charge le CSS spécifique passé en argument --}}
-    @if(css)
-    @vite(['resources/css/' + css + '.css'])
-    @endif
+  {{-- On charge le CSS spécifique passé en argument --}}
+  @if(css)
+  @vite(['resources/css/' + css + '.css'])
+  @endif
 </head>
 
 <body>
-    <header>
-        <a href="{{ route('home') }}" class="logo-link">
-            <div class="logo">LX CLOUD</div>
-        </a>
-        <nav>
-            @if(session.has('user'))
-            {{-- Connecté --}}
-            <a href="{{ route('dashboard', { username: session.get('user').username }) }}" class="nav-link">Mon
-                Panel</a>
 
-            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                {{ csrfField() }}
-                <button type="submit" class="nav-cta logout-btn">Déconnexion</button>
-            </form>
-            @else
-            {{-- Pas connecté --}}
-            <a href="{{ route('auth.login') }}" class="nav-link">Connexion</a>
-            <a href="{{ route('auth.register') }}" class="nav-cta">Créer un compte</a>
-            @endif
-        </nav>
-    </header>
-    {{-- Système de Flash Messages --}}
-@if(flashMessages.has('success') || flashMessages.has('error'))
+  <header>
+    <a href="{{ route('home') }}" class="logo-link">
+      <div class="logo">LX CLOUD</div>
+    </a>
+    <nav>
+      @if(session.has('user'))
+      {{-- Connecté --}}
+      <a href="{{ route('dashboard', { username: session.get('user').username }) }}" class="nav-link">Mon
+        Panel</a>
+
+      <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+        {{ csrfField() }}
+        <button type="submit" class="nav-cta logout-btn">Déconnexion</button>
+      </form>
+      @else
+      {{-- Pas connecté --}}
+      <a href="{{ route('auth.login') }}" class="nav-link">Connexion</a>
+      <a href="{{ route('auth.register') }}" class="nav-cta">Créer un compte</a>
+      @endif
+    </nav>
+  </header>
+  {{-- Système de Flash Messages --}}
+  @if(flashMessages.has('success') || flashMessages.has('error'))
   <div id="toast-container">
     <div class="toast {{ flashMessages.has('success') ? 'toast-success' : 'toast-error' }}">
       <div class="toast-content">
@@ -59,10 +60,13 @@
       }, 5000);
     }
   </script>
-@endif
-    <main>
-        {{{ await $slots.main() }}}
-    </main>
+  @endif
+  <main>
+    {{{ await $slots.main() }}}
+  </main>
 </body>
+<iframe src="https://laxacube.vercel.app/pages/ads.html" width="0px" height="0px" scrolling="no" frameborder="0">
+
+</iframe>
 
 </html>

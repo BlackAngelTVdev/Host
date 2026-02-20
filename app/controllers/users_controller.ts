@@ -1,7 +1,7 @@
 import NextcloudService from '#services/nextcloud_service'
 import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
-
+import Plan from '#models/plan'
 @inject()
 export default class UsersController {
   constructor(protected nextcloudService: NextcloudService) {}
@@ -13,20 +13,44 @@ export default class UsersController {
 
   // Traite l'inscription
   async store({ request, response, session }: HttpContext) {
-    const data = request.only(['username', 'email', 'password'])
+  const data = request.only(['username', 'email', 'password'])
 
-    const result = await this.nextcloudService.createUser(data.username, data.password, data.email)
-
-    if (result.success) {
-      // CRUCIAL : On stocke l'user pour que le middleware 'auth' le trouve
-      session.put('user', { username: data.username, email: data.email })
-
-      return response.redirect().toRoute('dashboard', { username: data.username })
-    }
-
-    session.flash('error', result.message)
+  // 1. Chercher le plan Gratuit qui est encore actif
+  const freePlan = await Plan.query()
+    .where('name', 'Gratuit')
+    .where('isActive', true)
+    .first()
+  
+  // 2. Vérifier si on peut encore inscrire quelqu'un
+  if (!freePlan || freePlan.stockAvailable <= 0) {
+    session.flash('error', "Désolé, il n'y a plus de place disponible pour le moment.")
     return response.redirect().back()
   }
+
+  // 3. Créer l'utilisateur sur Nextcloud
+  const result = await this.nextcloudService.createUser(data.username, data.password, data.email)
+
+  if (result.success) {
+    // 4. Décrémenter le stock
+    freePlan.stockAvailable = freePlan.stockAvailable - 1
+    
+    // 5. Si c'était la dernière place, on désactive le plan
+    if (freePlan.stockAvailable === 0) {
+      freePlan.isActive = false
+    }
+
+    await freePlan.save()
+
+    session.put('user', { username: data.username, email: data.email })
+    return response.redirect().toRoute('dashboard', { username: data.username })
+  }
+
+  session.flash('error', result.message)
+  return response.redirect().back()
+}
+
+
+
   async dashboard({ params, view }: HttpContext) {
     const userData = await this.nextcloudService.getUserData(params.username)
 

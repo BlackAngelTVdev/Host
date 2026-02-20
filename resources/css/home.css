@@ -9,16 +9,17 @@ html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    /* IMPORTANT : on bloque le scroll natif, c'est le JS qui gère */
-    overflow: hidden;
+    overflow: hidden; /* Le scroll natif est bloqué, c'est le JS qui gère */
 }
-main{
-  max-width: none;
+
+main {
+    max-width: none;
 }
+
 /* --- STRUCTURE PRINCIPALE --- */
 .page-split {
     display: grid;
-    grid-template-columns: 1fr 60px; /* Barre latérale plus fine */
+    grid-template-columns: 1fr 60px;
     height: 100vh;
     width: 100%;
     overflow: hidden;
@@ -43,9 +44,9 @@ main{
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Contenu en haut */
+    justify-content: flex-start;
     box-sizing: border-box;
-    padding: 60px 60px 40px 60px; /* Padding haut réduit pour monter le contenu */
+    padding: 60px 60px 40px 60px;
     transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1),
                 opacity 0.7s ease;
 }
@@ -55,10 +56,9 @@ main{
     z-index: 2;
     transform: translateY(0);
     opacity: 1;
-    background: transparent; /* Ton fond vient du body/var */
+    background: transparent;
 }
 
-/* Quand on scroll vers le bas : le hero part vers le haut */
 #hero-section.slide-out-up {
     transform: translateY(-100%);
     opacity: 0;
@@ -70,17 +70,14 @@ main{
     z-index: 1;
     transform: translateY(100%);
     opacity: 0;
-
 }
 
-/* Quand on scroll vers le bas : le pricing monte */
 #pricing.slide-in-up {
     transform: translateY(0);
     opacity: 1;
-    z-index: 3; /* Passe au dessus du hero */
+    z-index: 3;
 }
 
-/* Quand on revient en haut : le pricing repart en bas */
 #pricing.slide-out-down {
     transform: translateY(100%);
     opacity: 0;
@@ -97,8 +94,8 @@ main{
     align-items: center;
     animation: fadeIn 0.8s ease-out;
     width: 100%;
-    max-width: 1400px; /* Plus large */
-    margin-top: 40px; /* Descend légèrement depuis le haut */
+    max-width: 1400px;
+    margin-top: 40px;
 }
 
 .hero {
@@ -109,14 +106,16 @@ main{
     border: none;
 }
 
+/* Fusion des deux blocs .hero-title */
 .hero-title {
     font-size: clamp(3.5rem, 10vw, 5.5rem);
     font-weight: 900;
     margin-bottom: 0;
-    background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+    background: linear-gradient(135deg, #ffffff 30%, var(--accent) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     line-height: 1.1;
+    letter-spacing: -2px;
 }
 
 .hero-subtitle {
@@ -126,19 +125,25 @@ main{
 }
 
 /* --- CARTE INFO --- */
+/* Fusion des deux blocs .info-card */
 .info-card {
-    background: var(--bg-surface);
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     padding: 35px 60px;
     border-radius: 24px;
-    border: 1px solid var(--border-color);
-    max-width: 1000px; /* Plus large */
+    max-width: 1000px;
     width: 95%;
     text-align: left;
 }
 
+/* Fusion des deux blocs .card-title */
 .card-title {
-    font-size: 1.8rem;
+    font-size: 1.2rem;
+    font-weight: 800;
     color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
     margin-bottom: 15px;
 }
 
@@ -158,11 +163,14 @@ main{
     margin-bottom: 25px;
 }
 
+/* Fusion des deux blocs .features-list li */
 .features-list li {
     display: flex;
     align-items: center;
+    gap: 12px;
     font-size: 1.05rem;
     color: var(--text-secondary);
+    margin-bottom: 5px;
 }
 
 .btn-primary {
@@ -181,8 +189,9 @@ main{
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(111, 66, 193, 0.3);
+    filter: brightness(1.1);
 }
 
 /* ============================================
@@ -194,7 +203,7 @@ main{
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 1400px; /* Plus large */
+    max-width: 1400px;
     gap: 2rem;
     max-height: 100vh;
     overflow-y: auto;
@@ -202,7 +211,6 @@ main{
     box-sizing: border-box;
 }
 
-/* Cache la scrollbar mais garde le scroll fonctionnel */
 .section-content::-webkit-scrollbar { width: 4px; }
 .section-content::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
 
@@ -245,6 +253,24 @@ main{
     border-color: var(--accent);
     box-shadow: 0 0 30px var(--accent-glow);
     transform: scale(1.03);
+}
+
+.plan-card.inactive {
+    opacity: 0.6;
+    filter: grayscale(0.5);
+    border-color: #333;
+    cursor: not-allowed;
+}
+
+.plan-card.inactive:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.plan-card.inactive .plan-btn {
+    background: rgba(255, 255, 255, 0.05);
+    color: #666;
+    border-color: #444;
 }
 
 .badge {
@@ -297,7 +323,6 @@ main{
 .featured .plan-btn { background: var(--accent); border: none; }
 .featured .plan-btn:hover { filter: brightness(1.1); }
 
-/* Bouton retour en haut dans le pricing */
 .back-to-top {
     display: flex;
     align-items: center;
@@ -362,13 +387,11 @@ main{
     flex-shrink: 0;
 }
 
-/* État rempli */
 .dot.is-filled {
     background: var(--accent) !important;
     box-shadow: 0 0 15px var(--accent) !important;
 }
 
-/* État vide */
 .dot.is-hollow {
     background: transparent !important;
     box-shadow: none !important;
@@ -386,25 +409,7 @@ main{
 /* ============================================
    RESPONSIVE
    ============================================ */
-/* Style pour les plans désactivés */
-.plan-card.inactive {
-    opacity: 0.6;
-    filter: grayscale(0.5);
-    border-color: #333; /* Bordure plus sombre */
-    cursor: not-allowed;
-}
 
-.plan-card.inactive .plan-btn {
-    background: rgba(255, 255, 255, 0.05);
-    color: #666;
-    border-color: #444;
-}
-
-/* On enlève l'effet de scale sur les inactifs même si c'était le featured */
-.plan-card.inactive:hover {
-    transform: none;
-    box-shadow: none;
-}
 @media (max-width: 768px) {
     .info-card { padding: 25px 20px; }
     .stack-section { padding: 40px 20px; }

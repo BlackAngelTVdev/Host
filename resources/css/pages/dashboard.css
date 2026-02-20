@@ -123,3 +123,20 @@
 .btn-upgrade:hover {
     color: var(--accent);
 }
+.user-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.plan-badge {
+    background: rgba(111, 66, 193, 0.15); /* Ton violet léger */
+    color: var(--accent);
+    border: 1px solid rgba(111, 66, 193, 0.3);
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
