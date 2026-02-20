@@ -15,7 +15,7 @@ export default class AuthMiddleware {
 
     if (!loggedInUser) {
       session.flash('error', 'Tu dois être connecté pour voir ça.')
-      return response.redirect().toRoute('register')
+      return response.redirect().toRoute('auth.login')
     }
 
     // 2. Est-ce qu'il essaie de voir le dashboard de quelqu'un d'autre ?

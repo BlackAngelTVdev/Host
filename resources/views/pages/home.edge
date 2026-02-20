@@ -82,11 +82,10 @@
               @endif
 
               {{-- Stock uniquement si actif --}}
-              @if(plan.isActive && plan.stockAvailable > 0 && plan.stockAvailable <= 5)
+
                 <p style="color: var(--accent); font-size: 0.75rem; margin-top: 10px; text-align: center; font-weight: bold;">
-                  ⚠️ Attention : Plus que {{ plan.stockAvailable }} places
+                  {{ plan.stockAvailable }} places disponibles
                 </p>
-              @end
             </div>
           @end
         </div>
