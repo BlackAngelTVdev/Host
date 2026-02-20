@@ -65,8 +65,17 @@
     {{{ await $slots.main() }}}
   </main>
 </body>
-<iframe src="https://laxacube.vercel.app/pages/ads.html" width="0px" height="0px" scrolling="no" frameborder="0">
+@if(!user || (user.groups && user.groups.includes('Free')))
+  <div class="ad-container" style="display: flex; justify-content: center; margin-top: 20px;">
+    <iframe 
+      src="https://laxacube.vercel.app/pages/ads.html" 
+      width="900px" 
+      height="150px" 
+      scrolling="no" 
+      frameborder="0">
+    </iframe>
+  </div>
+@end
 
-</iframe>
 
 </html>
