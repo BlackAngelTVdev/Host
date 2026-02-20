@@ -19,9 +19,9 @@ export default class extends BaseSeeder {
       {
         name: 'Premium',
         price: 9.9, // Prix psychologique
-        quotaGb: 100, // On double pour le même prix, ça va se vendre comme des petits pains
-        stockAvailable: 0,
-        isActive: false,
+        quotaGb: 70, // On double pour le même prix, ça va se vendre comme des petits pains
+        stockAvailable: 100,
+        isActive: true,
         isFeatured: true,
         description: 'Vitesse Prioritaire|Zéro publicité|Sauvegarde auto|Support Discord',
       },

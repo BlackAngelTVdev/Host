@@ -1,0 +1,161 @@
+/* --- CONTAINER PRINCIPAL (FULL SCREEN) --- */
+.confirm-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    min-height: 100vh;
+    padding: 40px 20px;
+
+}
+
+/* --- LA CARTE (TYPE PANEL) --- */
+.confirm-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 40px;
+    border-radius: 32px;
+    width: 100%;
+    max-width: 750px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* --- HEADER --- */
+.confirm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 25px;
+}
+
+.title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.confirm-header h1 {
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+/* --- SECTION RÉCAPITULATIF --- */
+.summary-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    margin-bottom: 40px;
+    padding: 20px;
+    border-radius: 24px;
+}
+
+/* On réutilise ton cercle de progression pour le style */
+.quota-preview-circle {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.quota-preview-circle::before {
+    content: "";
+    position: absolute;
+    width: 115px;
+    height: 115px;
+    background: var(--surface);
+    border-radius: 50%;
+}
+
+.preview-content {
+    position: relative;
+    text-align: center;
+}
+
+.preview-value { font-size: 1.6rem; font-weight: 900; color: #fff; }
+.preview-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
+
+/* --- INFOS PAIEMENT --- */
+.payment-info h3 {
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.payment-details {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.payment-details .price-highlight {
+    color: var(--accent);
+    font-weight: 800;
+}
+
+/* --- ACTION STRIPE --- */
+.stripe-action-box {
+    background: linear-gradient(90deg, rgba(124, 58, 237, 0.1), transparent);
+    border: 1px solid var(--accent-glow);
+    padding: 30px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    text-align: center;
+}
+
+.btn-confirm-pay {
+    background: var(--text-primary);
+    color: var(--bg-color);
+    width: 100%;
+    max-width: 300px;
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-confirm-pay:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+}
+
+.cancel-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.cancel-link:hover {
+    color: #ff4d4d;
+}
+.confirm-features {
+    list-style: none;      /* Enlève les points */
+    padding: 0;           /* Enlève la marge intérieure par défaut */
+    margin: 15px 0 0 0;   /* Espace avec le prix */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;             /* Espace entre chaque ligne */
+}
+
+.confirm-features li {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;             /* Espace entre le check et le texte */
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
