@@ -1,0 +1,67 @@
+@layout({ css: 'pages/admin' })
+
+<div class="confirm-wrapper">
+  <div class="confirm-panel">
+    
+    <div class="confirm-header">
+      <div class="title-group">
+        <a href="{{ route('admin.index') }}" class="back-link">← Retour</a>
+        <h1>Configuration : {{ plan.name }}</h1>
+      </div>
+    </div>
+
+    <form action="{{ route('admin.plans.update', { id: plan.id }) }}" method="POST" class="edit-form">
+      {{ csrfField() }}
+
+      <div class="form-grid">
+        <div class="input-box">
+          <label>Nom de l'offre</label>
+          <input type="text" name="name" value="{{ plan.name }}">
+        </div>
+
+        <div class="input-box">
+          <label>Prix (CHF)</label>
+          <input type="number" step="0.01" name="price" value="{{ plan.price }}">
+        </div>
+
+        <div class="input-box">
+          <label>Stockage (Go)</label>
+          <input type="number" name="quotaGb" value="{{ plan.quotaGb }}">
+        </div>
+
+        {{-- Nouveau : Description avec séparateur | --}}
+        <div class="input-box full-width">
+          <label>Features (sépare avec | )</label>
+          <input type="text" name="description" value="{{ plan.description || '' }}" placeholder="Ex: Support 24/7|Serveurs Suisse|Vitesse 1Gbps">
+        </div>
+
+        <div class="input-box toggle-box">
+          <label>Mise en avant (Featured)</label>
+          <div class="switch-container">
+            <input type="checkbox" id="isFeatured" name="isFeatured" {{ plan.isFeatured ? 'checked' : '' }}>
+            <label for="isFeatured" class="switch-label">
+              <span class="status-text on">OUI</span>
+              <span class="status-text off">NON</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="input-box toggle-box">
+          <label>Ventes Ouvertes</label>
+          <div class="switch-container">
+            <input type="checkbox" id="isActive" name="isActive" {{ plan.isActive ? 'checked' : '' }}>
+            <label for="isActive" class="switch-label">
+              <span class="status-text on">ACTIF</span>
+              <span class="status-text off">OFF</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="stripe-action-box">
+        <button type="submit" class="btn-confirm-pay">Appliquer les changements</button>
+      </div>
+    </form>
+  </div>
+</div>
+@end

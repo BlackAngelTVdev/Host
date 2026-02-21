@@ -1,0 +1,253 @@
+/* On réutilise tes bases de container */
+.confirm-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.confirm-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 40px;
+    border-radius: 32px;
+    width: 100%;
+    max-width: 900px; /* Un peu plus large pour le tableau */
+    animation: fadeIn 0.5s ease-out;
+}
+
+.confirm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 25px;
+}
+
+/* --- STYLE DU TABLEAU --- */
+.admin-table-container {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px; /* Espace entre les lignes */
+}
+
+.admin-table th {
+    text-align: left;
+    padding: 0 15px 10px 15px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.admin-row {
+    background: rgba(255, 255, 255, 0.03);
+    transition: transform 0.2s ease;
+}
+
+.admin-row:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.admin-row td {
+    padding: 20px 15px;
+}
+
+.admin-row td:first-child { border-radius: 16px 0 0 16px; border-left: 1px solid var(--border); }
+.admin-row td:last-child { border-radius: 0 16px 16px 0; border-right: 1px solid var(--border); }
+.admin-row td { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+.plan-name {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.badge-quota {
+    background: var(--accent-glow);
+    color: var(--accent);
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.plan-price {
+    font-weight: 700;
+    color: #fff;
+}
+
+.currency { color: var(--text-muted); font-size: 0.8rem; }
+
+.stock-value {
+    font-family: 'monospace';
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.low-stock {
+    color: #ff4d4d;
+    text-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
+}
+
+/* --- BOUTON MODIFIER --- */
+.btn-edit-small {
+    background: #fff;
+    color: #000;
+    padding: 8px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.btn-edit-small:hover {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 15px var(--accent-glow);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+
+/* ________________________________________________________ EDIT ________________________________________________________ */
+
+
+
+/* --- FORMULAIRE D'ÉDITION --- */
+.back-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-box label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.input-box input[type="text"],
+.input-box input[type="number"] {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    padding: 15px;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.input-box input:focus {
+    border-color: var(--accent);
+    background: rgba(124, 58, 237, 0.05);
+    outline: none;
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* --- LE SWITCH (TOGGLE) --- */
+.toggle-box {
+    justify-content: center;
+}
+
+.switch-container input { display: none; }
+
+.switch-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    height: 50px;
+    background: #111;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.status-text {
+    z-index: 1;
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    transition: color 0.3s;
+}
+
+.switch-label::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    width: calc(50% - 8px);
+    height: calc(100% - 8px);
+    background: #333;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+input:checked + .switch-label::after {
+    left: calc(50% + 4px);
+    background: var(--accent);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+input:checked + .switch-label .on { color: #fff; }
+input:not(:checked) + .switch-label .off { color: #fff; }
+input:not(:checked) + .switch-label .on { color: #444; }
+input:checked + .switch-label .off { color: #444; }
+
+/* Responsive */
+@media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+}
+
+.discount-quick-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+}
+
+.discount-quick-form input, .discount-quick-form select {
+    background: #111;
+    border: 1px solid var(--border);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}

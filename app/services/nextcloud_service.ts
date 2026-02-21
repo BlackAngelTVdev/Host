@@ -93,24 +93,42 @@ export default class NextcloudService {
   public async checkAuth(identifier: string, password: string) {
     let username = identifier
 
-    // Résolution du username si c'est un email
+    // 1. Si l'identifiant est un email, on cherche le vrai username
     if (identifier.includes('@')) {
       try {
         const res = await fetch(
           `${this.cloudUrl}/ocs/v1.php/cloud/users?search=${identifier}&format=json`,
-          {
-            headers: this.getHeaders(),
-          }
+          { headers: this.getHeaders() }
         )
         const searchData = await res.json()
-        const users = searchData.ocs.data.users
-        if (users?.length > 0) username = users[0]
+        const users = searchData.ocs.data.users || []
+
+        // On vérifie chaque utilisateur trouvé pour voir si l'email matche exactement
+        let foundUsername = null
+        for (const u of users) {
+          const detailRes = await fetch(
+            `${this.cloudUrl}/ocs/v1.php/cloud/users/${u}?format=json`,
+            { headers: this.getHeaders() }
+          )
+          const detailData = await detailRes.json()
+          if (detailData.ocs.data.email === identifier) {
+            foundUsername = u
+            break
+          }
+        }
+
+        if (foundUsername) {
+          username = foundUsername
+        } else {
+          return { success: false } // Email non trouvé
+        }
       } catch (e) {
+        console.error('Erreur résolution email:', e)
         return { success: false }
       }
     }
 
-    // Tentative de login
+    // 2. Tentative de login avec le username (trouvé via l'email ou saisi directement)
     try {
       const userAuth = Buffer.from(`${username}:${password}`).toString('base64')
       const response = await fetch(`${this.cloudUrl}/ocs/v1.php/cloud/user?format=json`, {

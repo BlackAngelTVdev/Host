@@ -23,16 +23,24 @@
     </a>
     <nav>
       @if(session.has('user'))
-      {{-- Connecté --}}
-      <a href="{{ route('dashboard', { username: session.get('user').username }) }}" class="nav-link">Mon
-        Panel</a>
+      {{-- On récupère l'user envoyé par le controller ou la session --}}
+
+      {{-- ONGLET ADMIN : Visible seulement si le groupe 'admin' est présent --}}
+      @if(user && user.groups && user.groups.includes('admin'))
+      <a href="{{ route('admin.index')}}" class="nav-link admin-link" style="color: #ff4d4d; font-weight: bold;">
+        ⚙️ Admin
+      </a>
+      @endif
+
+      <a href="{{ route('dashboard', { username: session.get('user').username }) }}" class="nav-link">
+        Mon Panel
+      </a>
 
       <form action="{{ route('logout') }}" method="POST" style="display: inline;">
         {{ csrfField() }}
         <button type="submit" class="nav-cta logout-btn">Déconnexion</button>
       </form>
       @else
-      {{-- Pas connecté --}}
       <a href="{{ route('auth.login') }}" class="nav-link">Connexion</a>
       <a href="{{ route('auth.register') }}" class="nav-cta">Créer un compte</a>
       @endif
@@ -65,17 +73,12 @@
     {{{ await $slots.main() }}}
   </main>
 </body>
-@if(!user || (user.groups && user.groups.includes('Free')))
-  <div class="ad-container" style="display: flex; justify-content: center; margin-top: 20px;">
-    <iframe 
-      src="https://laxacube.vercel.app/pages/ads.html" 
-      width="900px" 
-      height="150px" 
-      scrolling="no" 
-      frameborder="0">
-    </iframe>
-  </div>
-@end
+{{-- @if(!user || (user.groups && user.groups.includes('Free')))
+<div class="ad-container" style="display: flex; justify-content: center; margin-top: 20px;">
+  <iframe src="https://laxacube.vercel.app/pages/ads.html" width="900px" height="150px" scrolling="no" frameborder="0">
+  </iframe>
+</div>
+@end --}}
 
 
 </html>

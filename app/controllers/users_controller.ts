@@ -12,6 +12,9 @@ export default class UsersController {
     protected subsController: SubscriptionsController // Injection ici
   ) {}
 
+  async register({ view }: HttpContext) {
+    return view.render('pages/auth/register')
+  }
   /**
    * Création de compte avec décrémentation manuelle
    */
@@ -95,7 +98,8 @@ export default class UsersController {
   }
 
   async handleLogin({ request, response, session }: HttpContext) {
-    const { uid, password } = request.only(['uid', 'password'])
+    const { uid, password } = request.only(['uid', 'password']) // 'uid' peut être l'email ou le pseudo
+
     const result = await this.nextcloudService.checkAuth(uid, password)
 
     if (result.success) {
@@ -103,6 +107,7 @@ export default class UsersController {
         username: result.realUsername,
         email: result.userData.email,
       })
+      // On redirige vers le dashboard avec le vrai username (celui de Nextcloud)
       return response.redirect().toRoute('dashboard', { username: result.realUsername })
     }
 

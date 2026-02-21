@@ -1,0 +1,93 @@
+@layout({ css: 'pages/admin' })
+
+<div class="confirm-wrapper">
+  <div class="confirm-panel">
+    
+    {{-- SECTION PLANS --}}
+    <div class="confirm-header">
+      <div class="title-group">
+        <h1>Gestion des Plans</h1>
+        <p class="payment-details">Contrôle ta machine à cash 💸</p>
+      </div>
+    </div>
+
+    <div class="admin-table-container">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Plan</th>
+            <th>Quota</th>
+            <th>Prix</th>
+            <th>Stock</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @each(plan in plans)
+          <tr class="admin-row">
+            <td class="plan-name">{{ plan.name }}</td>
+            <td><span class="badge-quota">{{ plan.quotaGb }} Go</span></td>
+            <td>{{ plan.price }} CHF</td>
+            <td><span class="stock-value">{{ plan.stockAvailable }}</span></td>
+            <td><a href="{{ route('admin.plans.edit', { id: plan.id }) }}" class="btn-edit-small">Modifier</a></td>
+          </tr>
+          @endeach
+        </tbody>
+      </table>
+    </div>
+
+    {{-- SECTION CODES PROMO --}}
+    <div class="confirm-header" style="margin-top: 60px;">
+      <div class="title-group">
+        <h1>Codes Promo</h1>
+        <p class="payment-details">Attire les clients avec des rabais</p>
+      </div>
+    </div>
+
+    {{-- Form d'ajout --}}
+    <form action="{{ route('admin.discounts.store') }}" method="POST" class="discount-quick-form">
+      {{ csrfField() }}
+      <input type="text" name="code" placeholder="CODE (ex: PROMO10)" required>
+      <select name="type">
+        <option value="percentage">% Pourcentage</option>
+        <option value="fixed">CHF Fixe</option>
+      </select>
+      <input type="number" name="value" placeholder="Valeur (ex: 10)" step="0.01" required>
+      <input type="number" name="max_uses" placeholder="Max usages (∞)">
+      <input type="date" name="expires_at">
+      <button type="submit" class="btn-edit-small" style="background:var(--accent); color:white; border:none;">Ajouter</button>
+    </form>
+
+    <div class="admin-table-container">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Réduction</th>
+            <th>Usage</th>
+            <th>Expiration</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @each(discount in discounts)
+          <tr class="admin-row">
+            <td class="plan-name">{{ discount.code }}</td>
+            <td>{{ discount.value }}{{ discount.type === 'percentage' ? '%' : ' CHF' }}</td>
+            <td>{{ discount.usedCount }} / {{ discount.maxUses || '∞' }}</td>
+            <td>{{ discount.expiresAt ? discount.expiresAt.toFormat('dd/MM/yyyy') : '∞' }}</td>
+            <td>
+              <form action="{{ route('admin.discounts.delete', { id: discount.id }) }}?_method=DELETE" method="POST">
+                {{ csrfField() }}
+                <button type="submit" class="cancel-link" style="background:none; border:none; cursor:pointer;">Supprimer</button>
+              </form>
+            </td>
+          </tr>
+          @endeach
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+@end

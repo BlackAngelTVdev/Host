@@ -25,38 +25,117 @@
             <div class="payment-info">
                 <h3>Abonnement {{ plan.name }}</h3>
                 <p class="payment-details">
-                    Facturation : <span class="price-highlight">{{ plan.price }} CHF / mois</span>
+                    Facturation : 
+                    <span class="price-highlight" id="display-price" data-base-price="{{ plan.price }}">
+                        {{ plan.price }} CHF / mois
+                    </span>
                 </p>
 
                 <ul class="confirm-features">
                     <li>✅ Infrastructure Suisse 🇨🇭</li>
                     @if(plan.description)
                         @each(feature in plan.description.split('|'))
-                        <li>✅ {{ feature }}</li>
+                            <li>✅ {{ feature }}</li>
                         @end
                     @end
                 </ul>
             </div>
         </div>
 
+        {{-- SECTION CODE PROMO --}}
+        <div class="promo-section" style="margin-bottom: 30px; padding: 20px; background: rgba(255,255,255,0.02); border: 1px dashed var(--border); border-radius: 20px;">
+            <label style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; font-weight: 700;">
+                Un code de réduction ?
+            </label>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="promo-input" placeholder="Saisir le code..." 
+                       style="flex: 1; background: #000; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 10px; font-weight: 600;">
+                <button type="button" id="apply-promo" class="btn-edit-small" style="padding: 0 20px; cursor: pointer;">
+                    Appliquer
+                </button>
+            </div>
+            <p id="promo-message" style="margin-top: 10px; font-size: 0.85rem; display: none; font-weight: 600;"></p>
+        </div>
+
         <div class="stripe-action-box">
-            <p style="font-size: 0.95rem; color: var(--text-muted);">
+            <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 20px;">
                 Vous allez être redirigé vers <strong>Stripe</strong> pour finaliser le paiement sécurisé.
             </p>
 
             <form action="{{ route('checkout.createSession') }}" method="POST" style="width: 100%;">
                 {{ csrfField() }}
                 <input type="hidden" name="planId" value="{{ plan.id }}">
-                <button type="submit" class="btn-confirm-pay">
+                
+                {{-- CHAMP CACHÉ POUR ENVOYER LE CODE AU BACKEND --}}
+                <input type="hidden" name="promoCode" id="hidden-promo-code" value="">
+                
+                <button type="submit" class="btn-confirm-pay" id="btn-pay">
                     CONFIRMER ET PAYER
                 </button>
             </form>
 
-            <a href="{{ route('dashboard', { username: session.get('user').username }) }}" class="cancel-link">
+            <a href="{{ route('dashboard', { username: session.get('user').username }) }}" class="cancel-link" style="margin-top: 20px; display: block;">
                 Annuler la transaction
             </a>
         </div>
 
     </div>
 </div>
+
+{{-- LOGIQUE JAVASCRIPT --}}
+<script>
+    const applyBtn = document.getElementById('apply-promo');
+    const promoInput = document.getElementById('promo-input');
+    const promoMsg = document.getElementById('promo-message');
+    const displayPrice = document.getElementById('display-price');
+    const hiddenPromoInput = document.getElementById('hidden-promo-code');
+    const basePrice = parseFloat(displayPrice.dataset.basePrice);
+
+    applyBtn.addEventListener('click', async () => {
+        const code = promoInput.value.trim().toUpperCase();
+        if(!code) return;
+
+        // On appelle ton futur endpoint API pour vérifier le code
+        try {
+            // NOTE : Il faudra créer cette route dans ton routes.ts
+            const response = await fetch(`/api/check-promo?code=${code}`);
+            const data = await response.json();
+
+            if (data.valid) {
+                let reductionText = "";
+                let newPrice = basePrice;
+
+                if (data.type === 'percentage') {
+                    newPrice = basePrice - (basePrice * (data.value / 100));
+                    reductionText = `-${data.value}%`;
+                } else {
+                    newPrice = basePrice - data.value;
+                    reductionText = `-${data.value} CHF`;
+                }
+                
+                newPrice = Math.max(0, newPrice).toFixed(2);
+                
+                // Mise à jour visuelle
+                displayPrice.innerHTML = `<strike style="color:rgba(255,255,255,0.3); margin-right: 8px;">${basePrice} CHF</strike> <span style="color:var(--accent)">${newPrice} CHF / mois</span>`;
+                
+                promoMsg.style.color = "#4ade80"; // Vert
+                promoMsg.innerText = `Félicitations ! Code ${code} appliqué (${reductionText})`;
+                promoMsg.style.display = "block";
+                
+                // On stocke le code pour le formulaire
+                hiddenPromoInput.value = code;
+                
+            } else {
+                promoMsg.style.color = "#f87171"; // Rouge
+                promoMsg.innerText = "Code promo invalide, expiré ou quota atteint.";
+                promoMsg.style.display = "block";
+                hiddenPromoInput.value = "";
+            }
+        } catch (e) {
+            console.error("Erreur promo:", e);
+            promoMsg.innerText = "Erreur de connexion au serveur.";
+            promoMsg.style.display = "block";
+        }
+    });
+</script>
 @end
