@@ -27,7 +27,7 @@ router.group(() => {
   
   // Tunnel de Paiement Stripe
   router.get('/checkout/confirm/:plan', [SubscriptionsController, 'confirm']).as('checkout.confirm')
-  router.post('/checkout/create-session', [SubscriptionsController, 'confirm']).as('checkout.createSession')
+  router.post('/checkout/create-session', [SubscriptionsController, 'createSession']).as('checkout.createSession')
 
   // Déconnexion
   router.post('/logout', [UsersController, 'logout']).as('logout')

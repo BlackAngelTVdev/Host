@@ -6,7 +6,6 @@
       <div class="user-info">
         <div class="user-title-row">
           <h2>Bienvenue, {{ username }}</h2>
-          {{-- Badge du groupe Nextcloud --}}
           @if(user.groups && user.groups.length > 0)
             <span class="plan-badge">{{ user.groups[0] }}</span>
           @endif
@@ -20,7 +19,6 @@
 
     <div class="stats-container">
       <div class="storage-chart">
-        {{-- Le graph circulaire --}}
         <div class="progress-circle" style="--percent: {{ user.percent }}">
           <div class="inner-content">
             <span class="usage">{{ user.percent }}%</span>
@@ -37,7 +35,6 @@
       </div>
     </div>
 
-    {{-- On affiche la bannière d'upgrade seulement si l'user n'est pas déjà au max --}}
     <div class="upgrade-banner">
       <div class="upgrade-text">
         <h4>Manque de place ?</h4>
@@ -47,4 +44,37 @@
     </div>
   </div>
 </div>
+
+{{-- SCRIPT POUR LE POP-UP --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search)
+    const paymentStatus = params.get('payment')
+
+    if (paymentStatus === 'success') {
+      Swal.fire({
+        title: 'Paiement réussi ! 🚀',
+        text: 'Merci pour ton abonnement. Ton espace de stockage va être mis à jour d\'ici quelques secondes.',
+        icon: 'success',
+        confirmButtonColor: '#8a2be2', // Le violet de ton dashboard
+        background: '#1a1a1a', // Dark mode pour matcher ton thème
+        color: '#fff'
+      })
+      // Optionnel : on nettoie l'URL pour pas que le pop-up revienne au refresh
+      window.history.replaceState({}, document.title, window.location.pathname)
+
+    } else if (paymentStatus === 'cancel') {
+      Swal.fire({
+        title: 'Paiement annulé',
+        text: 'Pas de souci, aucune transaction n\'a été effectuée.',
+        icon: 'info',
+        confirmButtonColor: '#8a2be2',
+        background: '#1a1a1a',
+        color: '#fff'
+      })
+      window.history.replaceState({}, document.title, window.location.pathname)
+    }
+  })
+</script>
 @end
