@@ -164,7 +164,7 @@ export default class NextcloudService {
     const freeSpaceGb = await this.getServerFreeSpace()
     const plans = await Plan.all()
 
-    // On définit tes limites ici
+    // 1. Tes limites commerciales MAX (Le plafond)
     const limits = {
       Gratuit: 100,
       Premium: 8,
@@ -172,22 +172,93 @@ export default class NextcloudService {
     }
 
     for (const plan of plans) {
+      // 2. Calculer combien de places physiques il reste sur le disque
       const physicalAvailable = Math.floor(freeSpaceGb / plan.quotaGb)
 
-      // 2. Ta limite commerciale (ex: 100 places)
-      const commercialLimit = limits[plan.name] || 0
+      // 3. RÉCUPÉRER LE NOMBRE D'USERS ACTUELS POUR CE PLAN
+      // On compte combien d'utilisateurs Nextcloud sont déjà dans ce groupe
+      // Note: On peut aussi compter en DB si tu as une table users liée au plan
+      const currentUsersCount = await this.getCurrentUsersCountForGroup(plan.name)
 
-      // 3. On prend le plus petit des deux
-      // Si physique dit 190 mais limite dit 100 -> On affiche 100
-      // Si physique dit 2 mais limite dit 100 -> On affiche 2 (Sécurité !)
-      const finalStock = Math.min(physicalAvailable, commercialLimit)
+      // 4. Calculer le stock restant
+      // Limite commerciale (ex: 8) - Utilisateurs actuels (ex: 1) = 7 places
+      const commercialRemaining = (limits[plan.name] || 0) - currentUsersCount
+
+      // 5. On prend le plus petit des deux (sécurité disque vs sécurité business)
+      const finalStock = Math.max(0, Math.min(physicalAvailable, commercialRemaining))
 
       plan.stockAvailable = finalStock
-
-      // On désactive si stock à 0 OU si tu as forcé le plan à "Ultra"
-      plan.isActive = finalStock > 0 && plan.name !== 'Ultra'
+      plan.isActive = finalStock > 0
 
       await plan.save()
+      console.log(
+        `[Stock] ${plan.name} : ${finalStock} places restantes (${currentUsersCount} inscrits)`
+      )
+    }
+  }
+
+  /**
+   * Helper pour compter les membres d'un groupe via l'API Nextcloud
+   */
+  private async getCurrentUsersCountForGroup(groupName: string): Promise<number> {
+    try {
+      const response = await fetch(
+        `${this.cloudUrl}/ocs/v1.php/cloud/groups/${groupName}?format=json`,
+        { headers: this.getHeaders() }
+      )
+      const data = await response.json()
+
+      // L'API renvoie la liste des users dans data.ocs.data.users
+      const users = data?.ocs?.data?.users || []
+      return users.length
+    } catch (e) {
+      console.error(`Erreur comptage groupe ${groupName}:`, e)
+      return 0
+    }
+  }
+  public async upgradeUser(username: string, planName: string, quota: string) {
+    try {
+      // 1. Update Quota
+      await fetch(`${this.cloudUrl}/ocs/v1.php/cloud/users/${username}?format=json`, {
+        method: 'PUT',
+        headers: {
+          ...this.getHeaders(),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ key: 'quota', value: quota }),
+      })
+
+      // 2. Nettoyage : On dégage l'ancien groupe
+      // Si l'user était "Free", on le vire. S'il était déjà "Premium", on le vire (pour remettre à propre)
+      const oldGroups = ['Free', 'Gratuit', 'Premium', 'Ultra']
+
+      for (const group of oldGroups) {
+        // On supprime systématiquement (Nextcloud s'en fout si l'user n'est pas dedans, il renverra juste un code 404/101 caché)
+        await fetch(`${this.cloudUrl}/ocs/v1.php/cloud/users/${username}/groups?format=json`, {
+          method: 'DELETE',
+          headers: {
+            ...this.getHeaders(),
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({ groupid: group }),
+        })
+      }
+
+      // 3. On ajoute le nouveau groupe (celui du plan acheté)
+      // planName doit correspondre pile poil au nom du groupe dans Nextcloud
+      await fetch(`${this.cloudUrl}/ocs/v1.php/cloud/users/${username}/groups?format=json`, {
+        method: 'POST',
+        headers: {
+          ...this.getHeaders(),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ groupid: planName }),
+      })
+
+      return { success: true }
+    } catch (error) {
+      console.error('Nextcloud Upgrade Error:', error)
+      return { success: false }
     }
   }
 }

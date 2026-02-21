@@ -55,14 +55,15 @@
     if (paymentStatus === 'success') {
       Swal.fire({
         title: 'Paiement réussi ! 🚀',
-        text: 'Merci pour ton abonnement. Ton espace de stockage va être mis à jour d\'ici quelques secondes.',
+        text: 'Ton espace est en cours de mise à jour. Rafraîchis la page dans 5 secondes si tu ne vois pas encore tes nouveaux Go !',
         icon: 'success',
-        confirmButtonColor: '#8a2be2', // Le violet de ton dashboard
-        background: '#1a1a1a', // Dark mode pour matcher ton thème
+        confirmButtonColor: '#8a2be2',
+        background: '#1a1a1a',
         color: '#fff'
+      }).then(() => {
+        // On ne nettoie l'URL que quand l'utilisateur clique sur "OK"
+        window.history.replaceState({}, document.title, window.location.pathname)
       })
-      // Optionnel : on nettoie l'URL pour pas que le pop-up revienne au refresh
-      window.history.replaceState({}, document.title, window.location.pathname)
 
     } else if (paymentStatus === 'cancel') {
       Swal.fire({
@@ -72,8 +73,9 @@
         confirmButtonColor: '#8a2be2',
         background: '#1a1a1a',
         color: '#fff'
+      }).then(() => {
+        window.history.replaceState({}, document.title, window.location.pathname)
       })
-      window.history.replaceState({}, document.title, window.location.pathname)
     }
   })
 </script>

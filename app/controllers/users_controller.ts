@@ -3,15 +3,14 @@ import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 import Plan from '#models/plan'
 import { registerValidator } from '#validators/user'
+import SubscriptionsController from '#controllers/subscriptions_controller'
 
 @inject()
 export default class UsersController {
-  constructor(protected nextcloudService: NextcloudService) {}
-
-  // Affiche le formulaire
-  async register({ view }: HttpContext) {
-    return view.render('pages/auth/register')
-  }
+  constructor(
+    protected nextcloudService: NextcloudService,
+    protected subsController: SubscriptionsController // Injection ici
+  ) {}
 
   /**
    * Création de compte avec décrémentation manuelle
@@ -64,12 +63,25 @@ export default class UsersController {
       // --- FIN MODIFICATION ---
     }
   }
-  async dashboard({ params, view }: HttpContext) {
+  async dashboard(ctx: HttpContext) {
+    const { params, view, request } = ctx
+
+    // 1. Détection automatique du retour de paiement Stripe
+    if (request.input('payment') === 'success' && request.input('session_id')) {
+      await this.subsController.handlePaymentSuccess(ctx)
+    }
+
+    // 2. On récupère les infos de l'user (le quota sera à jour si l'étape 1 a tourné)
     const userData = await this.nextcloudService.getUserData(params.username)
+
     if (!userData.success) {
       return view.render('pages/error', { message: 'Utilisateur non trouvé' })
     }
-    return view.render('pages/loged/dashboard', { user: userData, username: params.username })
+
+    return view.render('pages/loged/dashboard', {
+      user: userData,
+      username: params.username,
+    })
   }
 
   async logout({ session, response }: HttpContext) {
