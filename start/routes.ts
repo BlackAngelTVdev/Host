@@ -11,7 +11,9 @@ router.get('/api/check-promo', [AdminController, 'checkPromoApi'])
 
 router.on('/cgv').render('pages/condi/cvg').as('cgv')
 router.on('/privacy').render('pages/condi/privacy').as('privacy')
-router.on('/cloud').redirect('https://cloud.laxacube.ch').as('cloud')
+router.get('/cloud', ({ response }) => {
+  return response.redirect().toPath('https://cloud.laxacube.ch')
+}).as('cloud')
 
 router
   .group(() => {
