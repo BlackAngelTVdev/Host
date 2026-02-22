@@ -190,28 +190,22 @@ export default class NextcloudService {
     }
 
     for (const plan of plans) {
-      // 2. Calculer combien de places physiques il reste sur le disque
       const physicalAvailable = Math.floor(freeSpaceGb / plan.quotaGb)
-
-      // 3. RÉCUPÉRER LE NOMBRE D'USERS ACTUELS POUR CE PLAN
-      // On compte combien d'utilisateurs Nextcloud sont déjà dans ce groupe
-      // Note: On peut aussi compter en DB si tu as une table users liée au plan
       const currentUsersCount = await this.getCurrentUsersCountForGroup(plan.name)
-
-      // 4. Calculer le stock restant
-      // Limite commerciale (ex: 8) - Utilisateurs actuels (ex: 1) = 7 places
       const commercialRemaining = (limits[plan.name] || 0) - currentUsersCount
 
-      // 5. On prend le plus petit des deux (sécurité disque vs sécurité business)
       const finalStock = Math.max(0, Math.min(physicalAvailable, commercialRemaining))
-
       plan.stockAvailable = finalStock
-      plan.isActive = finalStock > 0
+
+      // LOGIQUE CORRIGÉE :
+      // Le plan est actif SI (stock > 0) ET SI (pas désactivé manuellement)
+      if (plan.isManuallyDisabled) {
+        plan.isActive = false
+      } else {
+        plan.isActive = finalStock > 0
+      }
 
       await plan.save()
-      console.log(
-        `[Stock] ${plan.name} : ${finalStock} places restantes (${currentUsersCount} inscrits)`
-      )
     }
   }
 
@@ -279,4 +273,6 @@ export default class NextcloudService {
       return { success: false }
     }
   }
+
+  
 }

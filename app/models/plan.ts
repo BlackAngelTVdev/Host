@@ -32,6 +32,9 @@ export default class Plan extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @column()
+  declare isManuallyDisabled: boolean
   // -----------------------------
 
   // Getter pour savoir si on peut encore l'acheter

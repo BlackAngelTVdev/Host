@@ -1,13 +1,13 @@
 @layout({ css: 'pages/dashboard' })
 <div class="dashboard-wrapper">
   <div class="panel-card">
-    
+
     <div class="dashboard-header">
       <div class="user-info">
         <div class="user-title-row">
           <h2>Bienvenue, {{ username }}</h2>
           @if(user.groups && user.groups.length > 0)
-            <span class="plan-badge">{{ user.groups[0] }}</span>
+          <span class="plan-badge">{{ user.groups[0] }}</span>
           @endif
         </div>
         <p class="email-tag">{{ user.email }}</p>
@@ -42,7 +42,19 @@
       </div>
       <a href="{{ route('home') }}#pricing" class="btn-upgrade">Voir les offres</a>
     </div>
+    <div class="manage-sub-box">
+      <h3>Gestion de l'offre</h3>
+      <p>Modifier votre carte, télécharger vos factures ou résilier l'abonnement.</p>
+
+      <form action="{{ route('subscriptions.portal') }}" method="POST">
+        {{ csrfField() }}
+        <button type="submit" class="btn-edit-small">
+          Gérer mon abonnement sur Stripe
+        </button>
+      </form>
+    </div>
   </div>
+
 </div>
 
 {{-- SCRIPT POUR LE POP-UP --}}

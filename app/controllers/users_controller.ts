@@ -4,26 +4,27 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Plan from '#models/plan'
 import { registerValidator } from '#validators/user'
 import SubscriptionsController from '#controllers/subscriptions_controller'
+import Stripe from 'stripe'
+import env from '#start/env'
+
+const stripe = new Stripe(env.get('STRIPE_SECRET_KEY'))
 
 @inject()
 export default class UsersController {
   constructor(
     protected nextcloudService: NextcloudService,
-    protected subsController: SubscriptionsController // Injection ici
+    protected subsController: SubscriptionsController
   ) {}
 
   async register({ view }: HttpContext) {
     return view.render('pages/auth/register')
   }
-  /**
-   * Création de compte avec décrémentation manuelle
-   */
+
   async store({ request, response, session }: HttpContext) {
     try {
-      // 1. Validation (Mails jetables + format)
       const data = await request.validateUsing(registerValidator)
 
-      // 2. Check Stock
+      // On vérifie s'il reste des places pour le plan gratuit
       const freePlan = await Plan.query().where('name', 'Gratuit').where('isActive', true).first()
 
       if (!freePlan || freePlan.stockAvailable <= 0) {
@@ -31,7 +32,6 @@ export default class UsersController {
         return response.redirect().back()
       }
 
-      // 3. Création Nextcloud
       const result = await this.nextcloudService.createUser(
         data.username,
         data.password,
@@ -39,46 +39,48 @@ export default class UsersController {
       )
 
       if (result.success) {
-        // 4. Update Stock
+        // Décrémentation du stock
         freePlan.stockAvailable -= 1
         if (freePlan.stockAvailable <= 0) freePlan.isActive = false
         await freePlan.save()
 
-        session.put('user', { username: data.username, email: data.email })
+        // IMPORTANT : On met l'email et le username dans la session
+        // C'est ce qui permettra à Stripe de créer le client avec le bon mail
+        session.put('user', { 
+          username: data.username, 
+          email: data.email 
+        })
+
         return response.redirect().toRoute('dashboard', { username: data.username })
       }
 
-      // Erreur venant de Nextcloud (ex: user déjà existant)
       session.flash('error', result.message)
       return response.redirect().back()
     } catch (error) {
-      // --- MODIFICATION ICI ---
       if (error.messages && Array.isArray(error.messages)) {
-        // On prend le premier message d'erreur de VineJS pour l'afficher en flash
         session.flash('error', error.messages[0].message)
       } else {
         session.flash('error', 'Une erreur inattendue est survenue.')
       }
-
-      session.flashAll()
-      console.error('Validation failed:', error.messages)
       return response.redirect().back()
-      // --- FIN MODIFICATION ---
     }
   }
-  async dashboard(ctx: HttpContext) {
-    const { params, view, request } = ctx
 
-    // 1. Détection automatique du retour de paiement Stripe
+  async dashboard(ctx: HttpContext) {
+    const { params, view, request, session } = ctx
+
+    // 1. Si retour de Stripe : On traite l'upgrade Nextcloud
     if (request.input('payment') === 'success' && request.input('session_id')) {
       await this.subsController.handlePaymentSuccess(ctx)
     }
 
-    // 2. On récupère les infos de l'user (le quota sera à jour si l'étape 1 a tourné)
+    // 2. Récupération des infos temps réel depuis Nextcloud (Quota, usage...)
     const userData = await this.nextcloudService.getUserData(params.username)
 
     if (!userData.success) {
-      return view.render('pages/error', { message: 'Utilisateur non trouvé' })
+      // Si la session existe mais que Nextcloud ne trouve pas l'user, on déconnecte
+      session.forget('user')
+      return response.redirect().toRoute('home')
     }
 
     return view.render('pages/loged/dashboard', {
@@ -87,31 +89,32 @@ export default class UsersController {
     })
   }
 
-  async logout({ session, response }: HttpContext) {
-    session.forget('user')
-    session.flash('success', 'Tu as été déconnecté. À la prochaine !')
-    return response.redirect().toRoute('home')
-  }
-
   async login({ view }: HttpContext) {
     return view.render('pages/auth/login')
   }
 
   async handleLogin({ request, response, session }: HttpContext) {
-    const { uid, password } = request.only(['uid', 'password']) // 'uid' peut être l'email ou le pseudo
+    const { uid, password } = request.only(['uid', 'password'])
 
     const result = await this.nextcloudService.checkAuth(uid, password)
 
     if (result.success) {
+      // On remplit la session avec les infos renvoyées par Nextcloud
       session.put('user', {
         username: result.realUsername,
-        email: result.userData.email,
+        email: result.userData.email, // Récupéré via l'API Nextcloud dans ton service
       })
-      // On redirige vers le dashboard avec le vrai username (celui de Nextcloud)
+      
       return response.redirect().toRoute('dashboard', { username: result.realUsername })
     }
 
     session.flash('error', 'Identifiants invalides')
     return response.redirect().back()
+  }
+
+  async logout({ session, response }: HttpContext) {
+    session.forget('user')
+    session.flash('success', 'Tu as été déconnecté. À la prochaine !')
+    return response.redirect().toRoute('home')
   }
 }

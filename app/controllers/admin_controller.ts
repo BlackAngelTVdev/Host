@@ -37,21 +37,18 @@ export default class AdminController {
    */
   async update({ params, request, response, session }: HttpContext) {
     const plan = await Plan.findOrFail(params.id)
-    const data = request.only(['price', 'quotaGb', 'isActive', 'isFeatured', 'name', 'description'])
+    const data = request.only(['isActive' /* ... autres champs */])
 
-    plan.merge({
-      name: data.name,
-      price: data.price,
-      quotaGb: data.quotaGb,
-      description: data.description,
-      isActive: !!data.isActive,
-      isFeatured: !!data.isFeatured,
-    })
+    // L'astuce : si la checkbox "Ventes Ouvertes" est décochée,
+    // on met isManuallyDisabled à true.
+    plan.isManuallyDisabled = !data.isActive
 
     await plan.save()
+
+    // On relance le calcul pour mettre à jour isActive selon le stock
     await this.nextcloudService.refreshPlansStock()
 
-    session.flash('success', `Plan ${plan.name} mis à jour !`)
+    session.flash('success', 'Réglages enregistrés')
     return response.redirect().toRoute('admin.index')
   }
 

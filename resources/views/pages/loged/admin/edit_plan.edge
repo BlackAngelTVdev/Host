@@ -2,7 +2,7 @@
 
 <div class="confirm-wrapper">
   <div class="confirm-panel">
-    
+
     <div class="confirm-header">
       <div class="title-group">
         <a href="{{ route('admin.index') }}" class="back-link">← Retour</a>
@@ -32,7 +32,8 @@
         {{-- Nouveau : Description avec séparateur | --}}
         <div class="input-box full-width">
           <label>Features (sépare avec | )</label>
-          <input type="text" name="description" value="{{ plan.description || '' }}" placeholder="Ex: Support 24/7|Serveurs Suisse|Vitesse 1Gbps">
+          <input type="text" name="description" value="{{ plan.description || '' }}"
+            placeholder="Ex: Support 24/7|Serveurs Suisse|Vitesse 1Gbps">
         </div>
 
         <div class="input-box toggle-box">
@@ -47,12 +48,13 @@
         </div>
 
         <div class="input-box toggle-box">
-          <label>Ventes Ouvertes</label>
+          <label>Ventes Ouvertes (Forcer l'arrêt)</label>
           <div class="switch-container">
-            <input type="checkbox" id="isActive" name="isActive" {{ plan.isActive ? 'checked' : '' }}>
+            {{-- On check selon si le plan N'EST PAS désactivé manuellement --}}
+            <input type="checkbox" id="isActive" name="isActive" {{ !plan.isManuallyDisabled ? 'checked' : '' }}>
             <label for="isActive" class="switch-label">
-              <span class="status-text on">ACTIF</span>
-              <span class="status-text off">OFF</span>
+              <span class="status-text on">OUVERT</span>
+              <span class="status-text off">FORCER OFF</span>
             </label>
           </div>
         </div>

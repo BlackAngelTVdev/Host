@@ -1,6 +1,7 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
+
 // Imports des Controllers
 const AdminController = () => import('#controllers/admin_controller')
 const HomeController = () => import('#controllers/home_controller')
@@ -46,3 +47,5 @@ router.group(() => {
 })
 .use(middleware.auth())
 router.get('/api/check-promo', [AdminController, 'checkPromoApi'])
+router.post('/subscriptions/portal', [SubscriptionsController, 'openPortal']).as('subscriptions.portal')
+
