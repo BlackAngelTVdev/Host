@@ -26,38 +26,15 @@ export default class SubscriptionsController {
   }
 
   async createSession({ request, response, session }: HttpContext) {
-    const { planId, promoCode } = request.only(['planId', 'promoCode']) // On récupère le code du form
+    const { planId, promoCode } = request.only(['planId', 'promoCode'])
     const user = session.get('user')
     const selectedPlan = await Plan.find(planId)
 
     if (!selectedPlan) return response.badRequest('Plan invalide')
 
-    // --- LOGIQUE DE CALCUL DU PRIX ---
-    let finalPrice = selectedPlan.price
-
-    if (promoCode) {
-      const discount = await Discount.query()
-        .where('code', promoCode.toUpperCase())
-        .first()
-
-      // Si le code est valide (utilisations max, date, etc.)
-      if (discount && discount.isValid) {
-        if (discount.type === 'percentage') {
-          finalPrice = selectedPlan.price - (selectedPlan.price * (discount.value / 100))
-        } else {
-          finalPrice = selectedPlan.price - discount.value
-        }
-        
-        // Sécurité : prix minimum 0 CHF
-        finalPrice = Math.max(0, finalPrice)
-        
-        // Optionnel : on incrémente l'usage direct ou on attend le succès du paiement ?
-        // On va attendre le webhook/success pour incrémenter le usedCount en vrai.
-      }
-    }
-
     try {
-      const stripeSession = await stripe.checkout.sessions.create({
+      // 1. On prépare la session Stripe avec le PRIX RÉEL du plan
+      const sessionConfig: any = {
         payment_method_types: ['card'],
         line_items: [
           {
@@ -65,10 +42,10 @@ export default class SubscriptionsController {
               currency: 'chf',
               product_data: {
                 name: `Abonnement Laxacube ${selectedPlan.name}`,
-                description: promoCode ? `Code promo ${promoCode} appliqué` : `Accès illimité`,
+                description: `Espace de stockage ${selectedPlan.quotaGb}GB`,
               },
-              // ON UTILISE LE PRIX CALCULÉ (multiplié par 100 pour les centimes)
-              unit_amount: Math.round(finalPrice * 100),
+              // /!\ TRÈS IMPORTANT : On envoie le prix NORMAL ici
+              unit_amount: Math.round(selectedPlan.price * 100),
               recurring: { interval: 'month' },
             },
             quantity: 1,
@@ -77,16 +54,30 @@ export default class SubscriptionsController {
         mode: 'subscription',
         success_url: `${env.get('APP_URL')}/dashboard/${user.username}?payment=success&session_id={CHECKOUT_SESSION_ID}&planId=${selectedPlan.id}&promo=${promoCode || ''}`,
         cancel_url: `${env.get('APP_URL')}/dashboard/${user.username}?payment=cancel`,
-        metadata: { 
-          userId: user.id, 
+        metadata: {
+          userId: user.id,
           planId: selectedPlan.id,
-          promoCode: promoCode || null // On garde le code dans les metadata
+          promoCode: promoCode || null,
         },
-      })
+      }
+
+      // 2. Si un code promo est présent, on l'ajoute à la session
+      if (promoCode) {
+        const discount = await Discount.query().where('code', promoCode.toUpperCase()).first()
+
+        if (discount && discount.isValid) {
+          // Au lieu de calculer nous-mêmes, on passe l'ID du coupon à Stripe
+          // Stripe doit avoir un coupon créé avec le MÊME code (ex: "SALO50")
+          sessionConfig.discounts = [{ coupon: discount.code.toUpperCase() }]
+        }
+      }
+
+      const stripeSession = await stripe.checkout.sessions.create(sessionConfig)
 
       return response.redirect().toPath(stripeSession.url!)
     } catch (error) {
-      return response.internalServerError('Erreur Stripe : ' + error.message)
+      console.error('Erreur Stripe:', error)
+      return response.internalServerError('Erreur lors de la création du paiement.')
     }
   }
 

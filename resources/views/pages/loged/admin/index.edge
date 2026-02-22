@@ -2,7 +2,7 @@
 
 <div class="confirm-wrapper">
   <div class="confirm-panel">
-    
+
     {{-- SECTION PLANS --}}
     <div class="confirm-header">
       <div class="title-group">
@@ -48,45 +48,64 @@
     <form action="{{ route('admin.discounts.store') }}" method="POST" class="discount-quick-form">
       {{ csrfField() }}
       <input type="text" name="code" placeholder="CODE (ex: PROMO10)" required>
+
       <select name="type">
         <option value="percentage">% Pourcentage</option>
         <option value="fixed">CHF Fixe</option>
       </select>
-      <input type="number" name="value" placeholder="Valeur (ex: 10)" step="0.01" required>
+
+      <input type="number" name="value" placeholder="Valeur" step="0.01" required>
+
+      {{-- NOUVEAU : Champ pour la durée --}}
+      <input type="number" name="duration_months" placeholder="Durée (mois) - vide = ∞" min="1">
+
       <input type="number" name="max_uses" placeholder="Max usages (∞)">
       <input type="date" name="expires_at">
-      <button type="submit" class="btn-edit-small" style="background:var(--accent); color:white; border:none;">Ajouter</button>
+
+      <button type="submit" class="btn-edit-small"
+        style="background:var(--accent); color:white; border:none;">Ajouter</button>
     </form>
 
     <div class="admin-table-container">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Code</th>
-            <th>Réduction</th>
-            <th>Usage</th>
-            <th>Expiration</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          @each(discount in discounts)
-          <tr class="admin-row">
-            <td class="plan-name">{{ discount.code }}</td>
-            <td>{{ discount.value }}{{ discount.type === 'percentage' ? '%' : ' CHF' }}</td>
-            <td>{{ discount.usedCount }} / {{ discount.maxUses || '∞' }}</td>
-            <td>{{ discount.expiresAt ? discount.expiresAt.toFormat('dd/MM/yyyy') : '∞' }}</td>
-            <td>
-              <form action="{{ route('admin.discounts.delete', { id: discount.id }) }}?_method=DELETE" method="POST">
-                {{ csrfField() }}
-                <button type="submit" class="cancel-link" style="background:none; border:none; cursor:pointer;">Supprimer</button>
-              </form>
-            </td>
-          </tr>
-          @endeach
-        </tbody>
-      </table>
-    </div>
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Réduction</th>
+        <th>Durée</th> {{-- Nouvelle colonne --}}
+        <th>Usage</th>
+        <th>Expiration</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @each(discount in discounts)
+      <tr class="admin-row">
+        <td class="plan-name">{{ discount.code }}</td>
+        <td>{{ discount.value }}{{ discount.type === 'percentage' ? '%' : ' CHF' }}</td>
+        
+        {{-- Affichage de la durée --}}
+        <td>
+          @if(discount.durationMonths)
+            {{ discount.durationMonths }} mois
+          @else
+            <span style="color: var(--text-muted)">Permanent</span>
+          @end
+        </td>
+
+        <td>{{ discount.usedCount }} / {{ discount.maxUses || '∞' }}</td>
+        <td>{{ discount.expiresAt ? discount.expiresAt.toFormat('dd/MM/yyyy') : '∞' }}</td>
+        <td>
+          <form action="{{ route('admin.discounts.delete', { id: discount.id }) }}?_method=DELETE" method="POST">
+            {{ csrfField() }}
+            <button type="submit" class="cancel-link" style="background:none; border:none; cursor:pointer;">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+      @endeach
+    </tbody>
+  </table>
+</div>
 
   </div>
 </div>

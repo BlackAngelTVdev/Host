@@ -234,8 +234,9 @@ input:checked + .switch-label .off { color: #444; }
 
 .discount-quick-form {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px;
+    /* On passe à 6 colonnes pour que tout tienne bien */
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
     background: rgba(255, 255, 255, 0.05);
     padding: 20px;
     border-radius: 16px;

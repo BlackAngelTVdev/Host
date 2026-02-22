@@ -14,13 +14,20 @@ export default class Discount extends BaseModel {
   @column()
   declare value: number
 
-  @column()
+  // LIEN DB : max_uses
+  @column({ columnName: 'max_uses' })
   declare maxUses: number | null
 
-  @column()
+  // LIEN DB : used_count
+  @column({ columnName: 'used_count' })
   declare usedCount: number
 
-  @column.dateTime()
+  // LIEN DB : duration_months
+  @column({ columnName: 'duration_months' })
+  declare durationMonths: number | null
+
+  // LIEN DB : expires_at
+  @column.dateTime({ columnName: 'expires_at' })
   declare expiresAt: DateTime | null
 
   @column.dateTime({ autoCreate: true })
@@ -29,22 +36,10 @@ export default class Discount extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
-  /**
-   * Getter pour savoir si le code est encore valide
-   */
   public get isValid() {
     const now = DateTime.now()
-    
-    // 1. Check date d'expiration
-    if (this.expiresAt && now > this.expiresAt) {
-      return false
-    }
-
-    // 2. Check nombre d'utilisations
-    if (this.maxUses !== null && this.usedCount >= this.maxUses) {
-      return false
-    }
-
+    if (this.expiresAt && now > this.expiresAt) return false
+    if (this.maxUses !== null && this.usedCount >= this.maxUses) return false
     return true
   }
 }
