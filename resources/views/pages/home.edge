@@ -150,22 +150,22 @@
             <div class="link-group">
               <h4>Produit</h4>
               <a href="{{ route('home') }}#pricing">Tarifs</a>
-              <a href="https://cloud.laxacube.ch" target="_blank">Connexion Cloud</a>
+              <a href="{{ route('cloud') }}" target="_blank">Connexion Cloud</a>
             </div>
+
             <div class="link-group">
               <h4>Légal</h4>
-              <a href="/cgv">CGV / CGU</a>
-              <a href="/privacy">Confidentialité</a>
+              <a href="{{ route('cgv') }}">CGV / CGU</a>
+              <a href="{{ route('privacy') }}">Confidentialité</a>
             </div>
           </div>
-        </div>
 
-        <div class="footer-bottom-row">
-          <p>&copy; {{ new Date().getFullYear() }} Laxacube. Créé avec passion. 🚀</p>
-        </div>
+          <div class="footer-bottom-row">
+            <p>&copy; {{ new Date().getFullYear() }} Laxacube. Créé avec passion. 🚀</p>
+          </div>
 
-        <button id="btn-footer-to-pricing" style="display: none;"></button>
-      </div>
+          <button id="btn-footer-to-pricing" style="display: none;"></button>
+        </div>
     </section>
 
   </div>
@@ -335,4 +335,4 @@
     init();
   });
 </script>
-  @end
+@end

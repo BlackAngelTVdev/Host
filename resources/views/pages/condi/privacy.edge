@@ -1,0 +1,74 @@
+@layout({ css: 'pages/condi' })
+
+<div class="condi-container">
+
+    <div>
+        <h1>Politique de Confidentialité</h1>
+        <p class="subtitle">Comment LaxaCube protège ta vie privée.</p>
+    </div>
+
+    <section>
+        <h2>1. Philosophie "Zéro Regard"</h2>
+        <p>
+            Chez LaxaCube, la confidentialité n'est pas une option, c'est la base du projet. 
+            <strong>Nous ne consultons jamais vos fichiers.</strong> Contrairement aux plateformes financées par la publicité, nous n'avons aucun intérêt à savoir ce que vous stockez.
+        </p>
+    </section>
+
+    <section>
+        <h2>2. Données collectées</h2>
+        <p>Nous limitons la collecte au strict minimum nécessaire au fonctionnement du service :</p>
+        <ul>
+            <li><strong>Compte :</strong> Votre adresse e-mail et votre nom d'utilisateur pour la gestion du compte.</li>
+            <li><strong>Paiement :</strong> Les informations de carte bancaire sont traitées directement par <strong>Stripe</strong>. LaxaCube ne stocke aucun numéro de carte sur ses propres serveurs.</li>
+            <li><strong>Connexion :</strong> Des logs techniques (IP, date) peuvent être conservés temporairement pour prévenir les abus et les attaques (brute force).</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>3. Localisation des données</h2>
+        <p>
+            Toutes vos données (fichiers, bases de données, backups) sont stockées physiquement en <strong>Suisse</strong> sur notre propre matériel. 
+            Aucune donnée n'est transférée en dehors du territoire suisse, sauf si vous utilisez un client tiers qui en fait la demande.
+        </p>
+    </section>
+
+    <section>
+        <h2>4. Sécurité technique</h2>
+        <p>
+            Pour garantir la sécurité de vos échanges, nous utilisons des certificats <strong>SSL/TLS</strong> (HTTPS) pour chiffrer la connexion entre vos appareils et le cloud. 
+            L'infrastructure Nextcloud est maintenue à jour régulièrement pour corriger les failles de sécurité potentielles.
+        </p>
+    </section>
+
+    <section>
+        <h2>5. Vos droits (LPD)</h2>
+        <p>
+            En tant qu'utilisateur, et conformément à la <strong>Loi sur la Protection des Données (LPD)</strong>, vous avez le droit :
+        </p>
+        <ul>
+            <li>D'accéder à l'intégralité de vos données.</li>
+            <li>De demander la suppression définitive de votre compte et de vos fichiers.</li>
+            <li>De rectifier vos informations personnelles depuis votre dashboard.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>6. Cookies</h2>
+        <p>
+            LaxaCube utilise uniquement des <strong>cookies techniques</strong> essentiels (session, authentification). 
+            Nous n'utilisons aucun cookie de tracking publicitaire ou d'analyse tierce (type Google Analytics).
+        </p>
+    </section>
+
+    <footer class="condi-footer-note">
+        <p>Version 1.1 — Dernière mise à jour : 22 février 2026</p>
+        <p>Une question sur vos données ? <a href="mailto:support@laxacube.ch">support@laxacube.ch</a></p>
+    </footer>
+
+    <a href="{{ route('home') }}" class="back-link">
+        ← Retour à l'accueil
+    </a>
+
+</div>
+@end

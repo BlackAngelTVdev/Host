@@ -1,0 +1,139 @@
+/* resources/css/pages/condi.css */
+
+.condi-container {
+    background-color: #0a0a0a;
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #b3b3b3;
+    line-height: 1.8;
+    padding: 100px 20px;
+    box-sizing: border-box;
+}
+
+/* Titres et Sous-titres */
+.condi-container h1 {
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 50px;
+    letter-spacing: -0.02em;
+}
+
+.subtitle {
+    color: var(--accent);
+    font-size: 1.1rem;
+    margin-top: -30px;
+    margin-bottom: 50px;
+    opacity: 0.8;
+}
+
+.condi-container h2 {
+    color: #ffffff;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-top: 40px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.condi-container h2::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, #333, transparent);
+    margin-left: 10px;
+}
+
+/* Texte et Listes */
+.condi-container p {
+    margin-bottom: 20px;
+    font-size: 1.05rem;
+}
+
+.condi-container section {
+    margin-bottom: 60px;
+}
+
+.condi-container strong {
+    color: #fff;
+    font-weight: 600;
+}
+
+.condi-container ul {
+    margin-bottom: 25px;
+    padding-left: 20px;
+}
+
+.condi-container li {
+    margin-bottom: 10px;
+    list-style-type: "→ ";
+    color: #bbb;
+}
+
+/* Liens globaux dans les sections */
+.condi-container section a {
+    color: #a855f7;
+    text-decoration: none;
+    transition: text-decoration 0.2s;
+}
+
+.condi-container section a:hover {
+    text-decoration: underline;
+}
+
+/* Footer et Mailto */
+.condi-footer-note {
+    margin-top: 80px;
+    padding: 30px;
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    font-size: 0.95rem;
+}
+
+.condi-footer-note a[href^="mailto:"] {
+    color: #a855f7;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.condi-footer-note a[href^="mailto:"]:hover {
+    color: #c084fc;
+    text-shadow: 0 0 8px rgba(168, 85, 247, 0.4);
+    text-decoration: underline;
+}
+
+/* Bouton Retour */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 40px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.back-link:hover {
+    transform: translateX(-5px);
+    color: var(--accent, #888);
+}
+
+.checklist li {
+    list-style-type: none;
+    padding-left: 0;
+    color: #e5e7eb;
+}
+/* Responsive */
+@media (max-width: 768px) {
+    .condi-container {
+        padding: 60px 15px;
+    }
+
+    .condi-container h1 {
+        font-size: 1.8rem;
+    }
+}

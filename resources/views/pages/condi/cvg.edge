@@ -1,0 +1,111 @@
+
+@layout({ css: 'pages/condi' })
+
+<div class="condi-container">
+
+    <div>
+        <h1>Conditions Générales de Vente & d'Utilisation</h1>
+        <p class="subtitle">LaxaCube : Stockage Cloud Souverain & Indépendant</p>
+    </div>
+
+    <section>
+        <h2>1. Objet du service</h2>
+        <p>
+            LaxaCube fournit un service de stockage et de synchronisation de fichiers en ligne basé sur
+            <strong>Nextcloud</strong>. Toute l'infrastructure est physiquement localisée en <strong>Suisse</strong>.
+        </p>
+    </section>
+
+    <section>
+        <h2>2. Protection des Données (LPD & RGPD)</h2>
+        <p>
+            LaxaCube s'engage à respecter scrupuleusement le cadre légal suisse et européen :
+        </p>
+        <ul>
+            <li><strong>Art. 6 LPD [Principes généraux] :</strong> Traitement des données de manière licite, de bonne
+                foi et proportionnée.</li>
+            <li><strong>Art. 7 LPD [Sécurité des données] :</strong> Protection contre tout traitement non autorisé par
+                des mesures organisationnelles et techniques.</li>
+            <li><strong>Art. 8 LPD [Protection dès la conception] :</strong> Intégration de la protection de la vie
+                privée dès l'étape de développement technique.</li>
+            <li><strong>OPD [Mesures techniques] :</strong> Application stricte des mesures de l'Ordonnance sur la
+                protection des données (art. 1 à 4).</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>3. Responsabilité et Interdictions</h2>
+        <p>
+            L'utilisateur est seul responsable du contenu stocké. Il est strictement interdit de stocker :
+        </p>
+        <ul class="checklist">
+            <li>Contenus pédopornographiques (Art. 197 CP).</li>
+            <li>Contenus incitant à la haine, à la violence ou à la discrimination (Art. 261 bis CP).</li>
+            <li>Fichiers protégés par le droit d'auteur sans autorisation (LDA).</li>
+            <li>Logiciels malveillants, virus ou outils destinés au phishing (Art. 143 bis CP).</li>
+        </ul>
+        <p>
+            <strong>LaxaCube collaborera</strong> activement avec les autorités suisses en cas de réquisition judiciaire
+            légale conforme au droit en vigueur.
+        </p>
+    </section>
+
+    <section>
+        <h2>4. Disponibilité et Maintenance</h2>
+        <p>
+            Nous visons une disponibilité de <strong>99.5%</strong>. Pour pallier les interruptions :
+        </p>
+        <ul>
+            <li>Une <strong>notification par e-mail</strong> sera envoyée pour toute maintenance planifiée au moins 24h
+                à l'avance.</li>
+            <li>En cas d'incident technique imprévu, un suivi sera assuré via nos canaux de communication.</li>
+        </ul>
+        <p>LaxaCube ne pourra être tenu responsable des préjudices liés à une indisponibilité temporaire hors de son
+            contrôle direct.</p>
+    </section>
+
+    <section>
+        <h2>5. Fin d'abonnement et Suppression</h2>
+        <p>
+            <strong>Période de grâce :</strong> En cas d'arrêt de l'abonnement, l'accès est maintenu jusqu'à la fin de
+            la période payée. Les données sont ensuite conservées durant <strong>30 jours</strong> avant suppression
+            définitive.
+        </p>
+        <p>
+            <strong>Droit à l'oubli :</strong> Sur requête de suppression de compte (LPD), vos données sont supprimées
+            <strong>instantanément</strong> des serveurs de production en ligne.
+        </p>
+        <p>
+            <strong>Serveurs hors-ligne et Synchronisation :</strong> Pour les serveurs temporairement inactifs au
+            moment de la demande, la suppression sera traitée et propagée automatiquement dès leur <strong>reconnexion
+                au réseau</strong>. Les copies de sauvegarde (backups) sont quant à elles purgées sous 14 jours.
+        </p>
+    </section>
+
+    <section>
+        <h2>6. Modalités de Paiement</h2>
+        <p>
+            Les tarifs sont indiqués en <strong>CHF</strong>. Le paiement est sécurisé par <strong>Stripe</strong>.
+            L'abonnement est sans engagement et peut être résilié à tout moment depuis le dashboard.
+        </p>
+    </section>
+
+    <section>
+        <h2>7. Droit Applicable et For Juridique</h2>
+        <p>
+            Les présentes conditions sont régies exclusivement par le <strong>droit suisse</strong>. En cas de litige,
+            le for juridique est établi à <strong>Lausanne</strong>.
+        </p>
+    </section>
+
+    <footer class="condi-footer-note">
+        <p>Version 1.4 — Dernière mise à jour : 22 février 2026</p>
+        <p>Une question ? <a href="mailto:support@laxacube.ch">support@laxacube.ch</a></p>
+    </footer>
+
+    <a href="{{ route('home') }}" class="back-link">
+        ← Retour à l'accueil
+    </a>
+
+</div>
+@end
