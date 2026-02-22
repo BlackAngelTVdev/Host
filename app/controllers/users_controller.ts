@@ -46,9 +46,9 @@ export default class UsersController {
 
         // IMPORTANT : On met l'email et le username dans la session
         // C'est ce qui permettra à Stripe de créer le client avec le bon mail
-        session.put('user', { 
-          username: data.username, 
-          email: data.email 
+        session.put('user', {
+          username: data.username,
+          email: data.email,
         })
 
         return response.redirect().toRoute('dashboard', { username: data.username })
@@ -67,18 +67,49 @@ export default class UsersController {
   }
 
   async dashboard(ctx: HttpContext) {
-    const { params, view, request, session } = ctx
+    const { params, view, request, session, response } = ctx
+    const user = session.get('user')
 
     // 1. Si retour de Stripe : On traite l'upgrade Nextcloud
     if (request.input('payment') === 'success' && request.input('session_id')) {
       await this.subsController.handlePaymentSuccess(ctx)
     }
 
-    // 2. Récupération des infos temps réel depuis Nextcloud (Quota, usage...)
+    // 2. LOGIQUE DE DÉSABONNEMENT (Version Ultra-Blindée)
+    if (user && user.email) {
+      try {
+        const customers = await stripe.customers.list({ email: user.email, limit: 1 })
+
+        if (customers.data.length > 0) {
+          // On récupère TOUS les abonnements du client (même annulés)
+          const subscriptions = await stripe.subscriptions.list({
+            customer: customers.data[0].id,
+          })
+
+          // On cherche s'il y en a au moins UN qui est vraiment actif (payé)
+          const hasActiveSub = subscriptions.data.some((sub) => sub.status === 'active')
+
+          if (!hasActiveSub) {
+            console.log(`[Laxacube] Aucun abo actif trouvé pour ${params.username}.`)
+
+            const currentData = await this.nextcloudService.getUserData(params.username)
+
+            // Si le quota est > 5, on remet à 5GB
+            if (currentData.success && Number(currentData.total) > 5) {
+              console.log(`[ACTION] 📉 Downgrade forcé vers 5GB`)
+              await this.nextcloudService.editUserQuota(params.username, '5GB')
+            }
+          }
+        }
+      } catch (e) {
+        console.error('Erreur Stripe:', e.message)
+      }
+    }
+
+    // 3. Récupération des infos temps réel (le quota sera à jour)
     const userData = await this.nextcloudService.getUserData(params.username)
 
     if (!userData.success) {
-      // Si la session existe mais que Nextcloud ne trouve pas l'user, on déconnecte
       session.forget('user')
       return response.redirect().toRoute('home')
     }
@@ -104,7 +135,7 @@ export default class UsersController {
         username: result.realUsername,
         email: result.userData.email, // Récupéré via l'API Nextcloud dans ton service
       })
-      
+
       return response.redirect().toRoute('dashboard', { username: result.realUsername })
     }
 

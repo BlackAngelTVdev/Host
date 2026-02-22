@@ -42,6 +42,8 @@
       </div>
       <a href="{{ route('home') }}#pricing" class="btn-upgrade">Voir les offres</a>
     </div>
+    {{-- On n'affiche la gestion que si l'utilisateur n'est PAS dans le groupe Free --}}
+    @if(!user.groups.includes('Free'))
     <div class="manage-sub-box">
       <h3>Gestion de l'offre</h3>
       <p>Modifier votre carte, télécharger vos factures ou résilier l'abonnement.</p>
@@ -53,6 +55,7 @@
         </button>
       </form>
     </div>
+    @endif
   </div>
 
 </div>

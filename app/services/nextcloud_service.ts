@@ -184,7 +184,7 @@ export default class NextcloudService {
 
     // 1. Tes limites commerciales MAX (Le plafond)
     const limits = {
-      Gratuit: 100,
+      Gratuit: 70,
       Premium: 8,
       Ultra: 2,
     }
@@ -273,6 +273,54 @@ export default class NextcloudService {
       return { success: false }
     }
   }
+  public async editUserQuota(username: string, quota: string) {
+    try {
+      // 1. Changement du quota (ex: 5GB)
+      const url = `${this.cloudUrl}/ocs/v1.php/cloud/users/${username}?format=json`
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          ...this.getHeaders(),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ key: 'quota', value: quota }),
+      })
 
-  
+      const data = await response.json()
+
+      if (data.ocs.meta.statuscode === 100) {
+        console.log(`[Nextcloud API] Quota de ${username} mis à jour : ${quota}`)
+
+        // 2. NETTOYAGE DES GROUPES (On remet l'utilisateur en "Free")
+        const paidGroups = ['Premium', 'Ultra']
+
+        for (const group of paidGroups) {
+          await fetch(`${this.cloudUrl}/ocs/v1.php/cloud/users/${username}/groups?format=json`, {
+            method: 'DELETE',
+            headers: {
+              ...this.getHeaders(),
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({ groupid: group }),
+          })
+        }
+
+        // 3. On s'assure qu'il est bien dans le groupe Free
+        await fetch(`${this.cloudUrl}/ocs/v1.php/cloud/users/${username}/groups?format=json`, {
+          method: 'POST',
+          headers: {
+            ...this.getHeaders(),
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({ groupid: 'Free' }), // Ou 'Gratuit' selon ton Nextcloud
+        })
+
+        return true
+      }
+      return false
+    } catch (error) {
+      console.error('Erreur API Nextcloud Downgrade:', error)
+      return false
+    }
+  }
 }
