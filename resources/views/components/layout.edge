@@ -72,13 +72,31 @@
   <main>
     {{{ await $slots.main() }}}
   </main>
+  <footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-brand">
+      <span class="logo-text">LAXACUBE</span>
+      <p>Le stockage cloud suisse, sécurisé et rapide. 🇨🇭</p>
+    </div>
+
+    <div class="footer-links">
+      <div class="link-group">
+        <h4>Produit</h4>
+        <a href="{{ route('home') }}#pricing">Tarifs</a>
+        <a href="https://cloud.laxacube.ch" target="_blank">Connexion Cloud</a>
+      </div>
+      
+      <div class="link-group">
+        <h4>Légal</h4>
+        <a href="/cgv">CGV / CGU</a>
+        <a href="/privacy">Confidentialité</a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>&copy; {{ new Date().getFullYear() }} Laxacube. Créé par Damien. 🚀</p>
+  </div>
+</footer>
 </body>
-{{-- @if(!user || (user.groups && user.groups.includes('Free')))
-<div class="ad-container" style="display: flex; justify-content: center; margin-top: 20px;">
-  <iframe src="https://laxacube.vercel.app/pages/ads.html" width="900px" height="150px" scrolling="no" frameborder="0">
-  </iframe>
-</div>
-@end --}}
-
-
 </html>

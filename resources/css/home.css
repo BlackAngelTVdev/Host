@@ -1,7 +1,6 @@
 /* ============================================
    SYSTÈME DE SCROLL — LAXACUBE
-   Principe : 2 sections "plein écran" empilées.
-   Le JS ajoute/retire des classes pour animer.
+   3 sections plein écran empilées.
    ============================================ */
 
 /* --- RESET DE BASE --- */
@@ -9,11 +8,16 @@ html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden; /* Le scroll natif est bloqué, c'est le JS qui gère */
+    overflow: hidden;
 }
 
 main {
     max-width: none;
+}
+
+/* Cache le footer global du layout — la home a le sien en section 3 */
+body > footer.main-footer {
+    display: none;
 }
 
 /* --- STRUCTURE PRINCIPALE --- */
@@ -32,7 +36,7 @@ main {
 }
 
 /* ============================================
-   LES DEUX SECTIONS
+   LES TROIS SECTIONS
    ============================================ */
 
 .stack-section {
@@ -56,7 +60,6 @@ main {
     z-index: 2;
     transform: translateY(0);
     opacity: 1;
-    background: transparent;
 }
 
 #hero-section.slide-out-up {
@@ -81,6 +84,33 @@ main {
 #pricing.slide-out-down {
     transform: translateY(100%);
     opacity: 0;
+    pointer-events: none;
+}
+
+#pricing.slide-out-up {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* --- FOOTER : caché en bas par défaut --- */
+#footer-section {
+    z-index: 1;
+    transform: translateY(100%);
+    opacity: 0;
+    justify-content: center;
+}
+
+#footer-section.slide-in-up {
+    transform: translateY(0);
+    opacity: 1;
+    z-index: 3;
+}
+
+#footer-section.slide-out-down {
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* ============================================
@@ -106,7 +136,6 @@ main {
     border: none;
 }
 
-/* Fusion des deux blocs .hero-title */
 .hero-title {
     font-size: clamp(3.5rem, 10vw, 5.5rem);
     font-weight: 900;
@@ -124,8 +153,6 @@ main {
     margin-top: 10px;
 }
 
-/* --- CARTE INFO --- */
-/* Fusion des deux blocs .info-card */
 .info-card {
     background: rgba(255, 255, 255, 0.02);
     backdrop-filter: blur(10px);
@@ -137,7 +164,6 @@ main {
     text-align: left;
 }
 
-/* Fusion des deux blocs .card-title */
 .card-title {
     font-size: 1.2rem;
     font-weight: 800;
@@ -163,7 +189,6 @@ main {
     margin-bottom: 25px;
 }
 
-/* Fusion des deux blocs .features-list li */
 .features-list li {
     display: flex;
     align-items: center;
@@ -323,6 +348,13 @@ main {
 .featured .plan-btn { background: var(--accent); border: none; }
 .featured .plan-btn:hover { filter: brightness(1.1); }
 
+.pricing-nav-btns {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
 .back-to-top {
     display: flex;
     align-items: center;
@@ -335,12 +367,87 @@ main {
     cursor: pointer;
     font-size: 0.9rem;
     transition: all 0.2s;
-    margin-top: 0.5rem;
 }
 
 .back-to-top:hover {
     border-color: var(--accent);
     color: var(--accent);
+}
+
+/* ============================================
+   FOOTER SECTION (SLIDE 3)
+   ============================================ */
+
+.footer-slide-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+    width: 100%;
+    max-width: 1100px;
+    padding: 60px 40px;
+    box-sizing: border-box;
+}
+
+.footer-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+
+.footer-brand .logo-text {
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 12px;
+    background: linear-gradient(to right, #fff, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.footer-brand p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    max-width: 260px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 60px;
+}
+
+.link-group h4 {
+    color: var(--text-primary);
+    font-size: 1rem;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.link-group a {
+    display: block;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    transition: color 0.2s ease;
+}
+
+.link-group a:hover {
+    color: var(--accent);
+}
+
+.footer-bottom-row {
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 20px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
 }
 
 /* ============================================
@@ -361,7 +468,7 @@ main {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    height: 50vh;
+    height: 55vh;
 }
 
 .line {
@@ -378,8 +485,8 @@ main {
 }
 
 .dot {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     border: 2px solid var(--accent);
     cursor: pointer;
@@ -389,7 +496,7 @@ main {
 
 .dot.is-filled {
     background: var(--accent) !important;
-    box-shadow: 0 0 15px var(--accent) !important;
+    box-shadow: 0 0 12px var(--accent) !important;
 }
 
 .dot.is-hollow {
@@ -411,10 +518,46 @@ main {
    ============================================ */
 
 @media (max-width: 768px) {
-    .info-card { padding: 25px 20px; }
     .stack-section { padding: 40px 20px; }
+    .info-card { padding: 25px 20px; }
     .section-content { padding: 20px; }
     .pricing-header h1 { font-size: 2.5rem; }
     .plan-card.featured { transform: scale(1); }
     .page-split { grid-template-columns: 1fr 40px; }
+    .footer-top-row { flex-direction: column; }
+    .footer-links { gap: 30px; }
+    .pricing-nav-btns { flex-direction: column; align-items: center; }
+    .footer-slide-content { padding: 40px 20px; }
+}
+
+/* La section entière qui contient tout le bloc footer */
+#footer-section {
+  display: flex;
+  align-items: center; /* Centre verticalement */
+  justify-content: center; /* Centre horizontalement */
+  padding: 80px 20px; /* Ajoute de l'espace en haut/bas et sur les côtés pour mobile */
+  min-height: 100vh; /* S'assure que ça prend tout l'écran */
+  box-sizing: border-box;
+}
+
+/* Le container du texte "C'est quoi l'idée" */
+.footer-slide-content {
+  width: 100%;
+  max-width: 1000px; /* Évite que le texte soit trop large sur grand écran */
+  display: flex;
+  flex-direction: column;
+  gap: 40px; /* Espace entre le texte, le footer et le bouton retour */
+}
+
+/* On peaufine le texte "À propos" */
+.about-text-container {
+  text-align: left;
+}
+
+.about-text-container h2 {
+  font-size: clamp(1.8rem, 5vw, 2.5rem); /* Taille adaptative */
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #fff, #888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

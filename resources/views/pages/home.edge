@@ -4,34 +4,33 @@
   <div class="content-side">
 
     {{-- ===== SECTION 1 : HERO ===== --}}
-<section class="stack-section" id="hero-section">
-  <div class="home-wrapper">
-    <header class="hero">
-      <h1 class="hero-title">LaxaCube.</h1>
-      <p class="hero-subtitle">Le cloud qui respecte ta vie privée.</p>
-    </header>
+    <section class="stack-section" id="hero-section">
+      <div class="home-wrapper">
+        <header class="hero">
+          <h1 class="hero-title">LaxaCube.</h1>
+          <p class="hero-subtitle">Le cloud qui respecte ta vie privée.</p>
+        </header>
 
-    <article class="info-card">
-      <h2 class="card-title">Propulsé par du vrai Hardware 🇨🇭</h2>
-      <p class="card-text">
-        Ici, pas de serveurs virtuels loués à l'autre bout du monde. 
-        LaxaCube tourne sur <strong>mon propre matériel</strong>, basé physiquement en Suisse. 
-        C'est du stockage brut, géré avec passion pour ceux qui veulent reprendre le contrôle de leurs données.
-      </p>
-      
-      <ul class="features-list">
-        <li>✅ <b>Souveraineté Totale</b> : Tes fichiers ne quittent pas mon infrastructure.</li>
-        <li>✅ <b>Performance Nextcloud</b> : Synchro instantanée sur tous tes appareils.</li>
-        <li>✅ <b>Zéro Regard Indiscret</b> : Pas de tracking, juste ton espace.</li>
-      </ul>
+        <article class="info-card">
+          <h2 class="card-title">Propulsé par du vrai Hardware 🇨🇭</h2>
+          <p class="card-text">
+            Ici, pas de serveurs virtuels loués à l'autre bout du monde.
+            LaxaCube tourne sur <strong>mon propre matériel</strong>, basé physiquement en Suisse.
+            C'est du stockage brut, géré avec passion pour ceux qui veulent reprendre le contrôle de leurs données.
+          </p>
 
-      <div class="action-area">
-        {{-- Ton bouton qui scroll vers le pricing --}}
-        <button class="btn-primary" id="btn-to-pricing">Choisir mon plan</button>
+          <ul class="features-list">
+            <li>✅ <b>Souveraineté Totale</b> : Tes fichiers ne quittent pas mon infrastructure.</li>
+            <li>✅ <b>Performance Nextcloud</b> : Synchro instantanée sur tous tes appareils.</li>
+            <li>✅ <b>Zéro Regard Indiscret</b> : Pas de tracking, juste ton espace.</li>
+          </ul>
+
+          <div class="action-area">
+            <button class="btn-primary" id="btn-to-pricing">Choisir mon plan</button>
+          </div>
+        </article>
       </div>
-    </article>
-  </div>
-</section>
+    </section>
 
     {{-- ===== SECTION 2 : PRICING ===== --}}
     <section class="stack-section" id="pricing">
@@ -43,74 +42,129 @@
 
         <div class="pricing-grid">
           @each(plan in plans)
-            {{-- On définit si l'utilisateur est connecté --}}
-            @let(isConnected = !!user)
+          @let(isConnected = !!user)
 
-            <div class="plan-card {{ plan.isFeatured ? 'featured' : '' }} {{ !plan.isActive ? 'inactive' : '' }}">
-              
-              @if(plan.isActive && plan.isFeatured)
-                <span class="badge">Recommandé</span>
-              @elseif(!plan.isActive)
-                <span class="badge" style="background: #444;">Bientôt de retour</span>
-              @end
+          <div class="plan-card {{ plan.isFeatured ? 'featured' : '' }} {{ !plan.isActive ? 'inactive' : '' }}">
 
-              <h3>{{ plan.name }}</h3>
-              
-              <div class="price">
-                <span class="amount">{{ plan.price }} CHF</span>
-                <span class="period">/mois</span>
-              </div>
+            @if(plan.isActive && plan.isFeatured)
+            <span class="badge">Recommandé</span>
+            @elseif(!plan.isActive)
+            <span class="badge" style="background: #444;">Bientôt de retour</span>
+            @end
 
-              <p class="storage">{{ plan.quotaGb }} Go de stockage</p>
+            <h3>{{ plan.name }}</h3>
 
-              <ul class="plan-features">
-                <li>✅ Infrastructure Suisse 🇨🇭</li>
-                @if(plan.description)
-                  @each(feature in plan.description.split('|'))
-                    <li>✅ {{ feature }}</li>
-                  @end
-                @end
-              </ul>
-
-              {{-- LOGIQUE DU BOUTON --}}
-              <div class="plan-actions">
-                @if(!plan.isActive)
-                  {{-- Section inactive --}}
-                @elseif(plan.stockAvailable > 0)
-                  
-                  @let(isConnected = !!user)
-                  {{-- On récupère le pseudo de la session de manière ultra-sécurisée --}}
-                  @let(loggedUsername = session.get('user')?.username)
-
-                  @let(url = isConnected 
-                    ? (plan.id === 1 && loggedUsername ? route('dashboard', { username: loggedUsername }) : route('checkout.confirm', { plan: plan.id })) 
-                    : route('auth.register', { plan: plan.id })
-                  )
-
-                  <a href="{{ url }}" class="plan-btn">
-                    @if(plan.id === 1)
-                      {{ isConnected ? 'Accéder au Dashboard' : 'Démarrer gratuitement' }}
-                    @else
-                      {{ isConnected ? 'Améliorer mon offre' : 'Choisir ce plan' }}
-                    @endif
-                  </a>
-
-                @else
-                  <button class="plan-btn" disabled>Plus de stock</button>
-                @endif
-              </div>
-
-              <p style="color: var(--accent); font-size: 0.75rem; margin-top: 10px; text-align: center; font-weight: bold;">
-                {{ plan.stockAvailable }} places disponibles
-              </p>
+            <div class="price">
+              <span class="amount">{{ plan.price }} CHF</span>
+              <span class="period">/mois</span>
             </div>
+
+            <p class="storage">{{ plan.quotaGb }} Go de stockage</p>
+
+            <ul class="plan-features">
+              <li>✅ Infrastructure Suisse 🇨🇭</li>
+              @if(plan.description)
+              @each(feature in plan.description.split('|'))
+              <li>✅ {{ feature }}</li>
+              @end
+              @end
+            </ul>
+
+            <div class="plan-actions">
+              @if(!plan.isActive)
+              {{-- inactive, rien --}}
+              @elseif(plan.stockAvailable > 0)
+              @let(isConnected = !!user)
+              @let(loggedUsername = session.get('user')?.username)
+              @let(url = isConnected
+              ? (plan.id === 1 && loggedUsername ? route('dashboard', { username: loggedUsername }) :
+              route('checkout.confirm', { plan: plan.id }))
+              : route('auth.register', { plan: plan.id })
+              )
+              <a href="{{ url }}" class="plan-btn">
+                @if(plan.id === 1)
+                {{ isConnected ? 'Accéder au Dashboard' : 'Démarrer gratuitement' }}
+                @else
+                {{ isConnected ? 'Améliorer mon offre' : 'Choisir ce plan' }}
+                @endif
+              </a>
+              @else
+              <button class="plan-btn" disabled>Plus de stock</button>
+              @endif
+            </div>
+
+            <p
+              style="color: var(--accent); font-size: 0.75rem; margin-top: 10px; text-align: center; font-weight: bold;">
+              {{ plan.stockAvailable }} places disponibles
+            </p>
+          </div>
           @end
         </div>
 
+        <div class="pricing-nav-btns">
+          <button class="back-to-top" id="btn-to-hero">↑ Retour en haut</button>
+          <button class="back-to-top" id="btn-to-footer">↓ En savoir plus</button>
+        </div>
+      </div>
+    </section>
 
-        <button class="back-to-top" id="btn-to-hero">
-          ↑ Retour en haut
-        </button>
+    {{-- ===== SECTION 3 : FOOTER ===== --}}
+    <section class="stack-section" id="footer-section">
+      <div class="footer-slide-content">
+
+        {{-- SECTION À PROPOS --}}
+        <div class="about-text-container" style="max-width: 850px; margin: 0 auto 60px auto; text-align: left;">
+          <h2 style="font-size: 2.2rem; margin-bottom: 25px; color: var(--text-primary); font-weight: 800;">
+            C'est quoi l'idée ?
+          </h2>
+
+          <p style="font-size: 1.1rem; line-height: 1.8; color: #bbb; margin-bottom: 20px;">
+            Aujourd'hui, confier ses fichiers à un géant du cloud, c'est souvent accepter une zone d'ombre sur la
+            localisation réelle de ses données et sur qui y a accès. <strong>LaxaCube</strong> est né de l'envie de
+            proposer une alternative radicalement différente : un espace de stockage où la transparence n'est pas une
+            option.
+          </p>
+
+          <p style="font-size: 1.1rem; line-height: 1.8; color: #bbb; margin-bottom: 20px;">
+            Contrairement à la majorité des services actuels, nous n'utilisons aucun serveur virtuel loué à des tiers.
+            Toute l'infrastructure repose sur du <strong>matériel physique dédié</strong>, installé et géré en Suisse.
+            Cette indépendance technique nous permet de garantir qu'aucun algorithme ne scanne vos documents et
+            qu'aucune donnée n'est revendue.
+          </p>
+
+          <p style="font-size: 1.1rem; line-height: 1.8; color: #bbb;">
+            Le but est simple : redonner le contrôle aux utilisateurs avec un outil performant, basé sur
+            <strong>Nextcloud</strong>, tout en soutenant une informatique souveraine, locale et respectueuse de la vie
+            privée. Pas de marketing complexe, juste du stockage brut et sécurisé pour ceux qui savent ce que valent
+            leurs données.
+          </p>
+        </div>
+
+        {{-- TON FOOTER (Déjà existant) --}}
+        <div class="footer-top-row">
+          <div class="footer-brand">
+            <span class="logo-text">LAXACUBE</span>
+            <p>Le stockage cloud suisse. 🇨🇭</p>
+          </div>
+          <div class="footer-links">
+            <div class="link-group">
+              <h4>Produit</h4>
+              <a href="{{ route('home') }}#pricing">Tarifs</a>
+              <a href="https://cloud.laxacube.ch" target="_blank">Connexion Cloud</a>
+            </div>
+            <div class="link-group">
+              <h4>Légal</h4>
+              <a href="/cgv">CGV / CGU</a>
+              <a href="/privacy">Confidentialité</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom-row">
+          <p>&copy; {{ new Date().getFullYear() }} Laxacube. Créé avec passion. 🚀</p>
+        </div>
+
+        <button id="btn-footer-to-pricing" style="display: none;"></button>
       </div>
     </section>
 
@@ -121,7 +175,9 @@
     <div class="sticky-track">
       <div class="dot is-filled" id="dot-top" title="Accueil"></div>
       <div class="line"></div>
-      <div class="dot is-hollow" id="dot-bottom" title="Tarifs"></div>
+      <div class="dot is-hollow" id="dot-mid" title="Tarifs"></div>
+      <div class="line"></div>
+      <div class="dot is-hollow" id="dot-bottom" title="Footer"></div>
     </div>
   </div>
 </div>
@@ -130,95 +186,125 @@
   document.addEventListener('DOMContentLoaded', () => {
 
     // ── Éléments ──────────────────────────────────────────────
-    const hero = document.getElementById('hero-section');
-    const pricing = document.getElementById('pricing');
-    const dotTop = document.getElementById('dot-top');
-    const dotBottom = document.getElementById('dot-bottom');
-    const btnDown = document.getElementById('btn-to-pricing');
-    const btnUp = document.getElementById('btn-to-hero');
+    const sections = [
+      document.getElementById('hero-section'),
+      document.getElementById('pricing'),
+      document.getElementById('footer-section'),
+    ];
 
-    // ── État ──────────────────────────────────────────────────
-    // false = on est sur le hero, true = on est sur le pricing
-    let onPricing = false;
-    let isAnimating = false; // Bloque les actions pendant l'animation
+    const dots = [
+      document.getElementById('dot-top'),
+      document.getElementById('dot-mid'),
+      document.getElementById('dot-bottom'),
+    ];
 
-    // ── Fonctions principales ─────────────────────────────────
+    const hashMap = ['', '#pricing', '#footer'];
 
-    function goToPricing() {
-      if (isAnimating || onPricing) return;
-      isAnimating = true;
-      onPricing = true;
+    let current = 0;
+    let isAnimating = false;
 
-      // 1. Le hero part vers le haut
-      hero.classList.add('slide-out-up');
-
-      // 2. Le pricing monte depuis le bas (légèrement en décalé = effet sympa)
-      setTimeout(() => {
-        pricing.classList.remove('slide-out-down'); // Reset si on revient
-        pricing.classList.add('slide-in-up');
-      }, 100);
-
-      // 3. Mise à jour des dots
-      updateDots();
-
-      // 4. Libère le verrou après l'animation (700ms = durée CSS)
-      setTimeout(() => { isAnimating = false; }, 750);
+    // ── Utilitaire : nettoie toutes les classes d'une section ──
+    function clean(section) {
+      section.classList.remove('slide-in-up', 'slide-out-up', 'slide-out-down');
     }
 
-    function goToHero() {
-      if (isAnimating || !onPricing) return;
-      isAnimating = true;
-      onPricing = false;
+    // ── Place chaque section dans son état initial sans anim ──
+    function applyStateInstant(index) {
+      sections.forEach((s, i) => {
+        s.style.transition = 'none';
+        clean(s);
+        if (i < index) {
+          s.classList.add('slide-out-up');   // au-dessus, cachée en haut
+        } else if (i === index) {
+          s.classList.add('slide-in-up');    // visible
+        } else {
+          // pas de classe = caché en bas (état CSS par défaut)
+        }
+      });
 
-      // 1. Le pricing repart vers le bas
-      pricing.classList.remove('slide-in-up');
-      pricing.classList.add('slide-out-down');
-
-      // 2. Le hero redescend
-      setTimeout(() => {
-        hero.classList.remove('slide-out-up');
-      }, 100);
-
-      updateDots();
-
-      setTimeout(() => { isAnimating = false; }, 750);
+      // Réactive les transitions après le rendu
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        sections.forEach(s => s.style.transition = '');
+      }));
     }
 
-    function updateDots() {
-      if (onPricing) {
-        dotTop.classList.remove('is-filled');
-        dotTop.classList.add('is-hollow');
-        dotBottom.classList.remove('is-hollow');
-        dotBottom.classList.add('is-filled');
+    // ── Navigation principale ─────────────────────────────────
+    function goTo(target) {
+      if (isAnimating || target === current) return;
+      if (target < 0 || target > sections.length - 1) return;
+
+      isAnimating = true;
+      const prev = current;
+      current = target;
+
+      if (target > prev) {
+        // ── Descend ──
+        clean(sections[prev]);
+        sections[prev].classList.add('slide-out-up');
+
+        setTimeout(() => {
+          clean(sections[target]);
+          sections[target].classList.add('slide-in-up');
+        }, 80);
+
       } else {
-        dotTop.classList.remove('is-hollow');
-        dotTop.classList.add('is-filled');
-        dotBottom.classList.remove('is-filled');
-        dotBottom.classList.add('is-hollow');
+        // ── Remonte ──
+        clean(sections[prev]);
+        sections[prev].classList.add('slide-out-down');
+
+        setTimeout(() => {
+          clean(sections[target]);
+          sections[target].classList.add('slide-in-up');
+        }, 80);
       }
+
+      updateDots();
+      updateHash();
+      setTimeout(() => { isAnimating = false; }, 750);
     }
 
-    // ── Événements ────────────────────────────────────────────
+    // ── Dots ──────────────────────────────────────────────────
+    function updateDots() {
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('is-filled', i === current);
+        dot.classList.toggle('is-hollow', i !== current);
+      });
+    }
 
-    // Boutons dans le contenu
-    btnDown.addEventListener('click', goToPricing);
-    btnUp.addEventListener('click', goToHero);
+    // ── Hash ──────────────────────────────────────────────────
+    function updateHash() {
+      const hash = hashMap[current];
+      history.replaceState(null, '', hash || window.location.pathname);
+    }
 
-    // Dots latéraux
-    dotTop.addEventListener('click', goToHero);
-    dotBottom.addEventListener('click', goToPricing);
+    // ── Init depuis l'URL ─────────────────────────────────────
+    function init() {
+      const hash = window.location.hash;
+      if (hash === '#pricing') current = 1;
+      else if (hash === '#footer') current = 2;
+      else current = 0;
 
-    // Molette de la souris
+      applyStateInstant(current);
+      updateDots();
+    }
+
+    // ── Boutons ───────────────────────────────────────────────
+    document.getElementById('btn-to-pricing').addEventListener('click', () => goTo(1));
+    document.getElementById('btn-to-hero').addEventListener('click', () => goTo(0));
+    document.getElementById('btn-to-footer').addEventListener('click', () => goTo(2));
+    document.getElementById('btn-footer-to-pricing').addEventListener('click', () => goTo(1));
+
+    // ── Dots latéraux ─────────────────────────────────────────
+    dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+
+    // ── Molette ───────────────────────────────────────────────
     window.addEventListener('wheel', (e) => {
       if (isAnimating) return;
-      if (e.deltaY > 30) {
-        goToPricing(); // Scroll bas → pricing
-      } else if (e.deltaY < -30) {
-        goToHero();    // Scroll haut → hero
-      }
+      if (e.deltaY > 30) goTo(current + 1);
+      else if (e.deltaY < -30) goTo(current - 1);
     }, { passive: true });
 
-    // Support tactile (mobile)
+    // ── Tactile ───────────────────────────────────────────────
     let touchStartY = 0;
     window.addEventListener('touchstart', (e) => {
       touchStartY = e.touches[0].clientY;
@@ -227,51 +313,26 @@
     window.addEventListener('touchend', (e) => {
       if (isAnimating) return;
       const delta = touchStartY - e.changedTouches[0].clientY;
-      if (delta > 50) {
-        goToPricing();
-      } else if (delta < -50) {
-        goToHero();
-      }
+      if (delta > 50) goTo(current + 1);
+      else if (delta < -50) goTo(current - 1);
     }, { passive: true });
 
-    // Touche clavier (accessibilité)
+    // ── Clavier ───────────────────────────────────────────────
     window.addEventListener('keydown', (e) => {
       if (isAnimating) return;
-      if (e.key === 'ArrowDown' || e.key === 'PageDown') goToPricing();
-      if (e.key === 'ArrowUp' || e.key === 'PageUp') goToHero();
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') goTo(current + 1);
+      if (e.key === 'ArrowUp' || e.key === 'PageUp') goTo(current - 1);
     });
 
-    // ── Gestion de l'URL #pricing ─────────────────────────────
-    // Si l'URL contient #pricing au chargement, on va direct dessus
-    if (window.location.hash === '#pricing') {
-      // On saute l'animation pour aller direct
-      onPricing = true;
-      hero.classList.add('slide-out-up');
-      pricing.classList.add('slide-in-up');
-      updateDots();
-    }
-
-    // Écoute les changements de hash en cours de navigation
+    // ── Hashchange (navigation navigateur) ───────────────────
     window.addEventListener('hashchange', () => {
-      if (window.location.hash === '#pricing' && !onPricing) {
-        goToPricing();
-      } else if (window.location.hash !== '#pricing' && onPricing) {
-        goToHero();
-      }
+      const hash = window.location.hash;
+      const target = hash === '#pricing' ? 1 : hash === '#footer' ? 2 : 0;
+      goTo(target);
     });
 
-    // Met à jour le hash selon la section (pour partager le lien)
-    function updateHash() {
-      const newHash = onPricing ? '#pricing' : '#';
-      // On utilise replaceState pour ne pas polluer l'historique
-      history.replaceState(null, '', newHash === '#' ? window.location.pathname : newHash);
-    }
-
-    // Appel updateHash après chaque navigation
-    btnDown.addEventListener('click', () => setTimeout(updateHash, 800));
-    btnUp.addEventListener('click', () => setTimeout(updateHash, 800));
-
+    // ── Lancement ─────────────────────────────────────────────
+    init();
   });
 </script>
-
-@end
+  @end
