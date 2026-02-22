@@ -1,8 +1,1129 @@
-<h1>
-  {{ error.code }} - Server error
-</h1>
-<p>
-  This template is rendered by the
-  <a href="http://docs.adonisjs.com/guides/exception-handling#status-pages">status pages feature</a>
-  of the global exception handler.
-</p>
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>500 — LX Cloud</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #050508;
+      --surface: #0d0d12;
+      --accent: #7c3aed;
+      --accent-glow: rgba(124, 58, 237, 0.3);
+      --text-primary: #ffffff;
+      --text-muted: #888891;
+      --border: rgba(255, 255, 255, 0.08);
+      --font-main: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --red: #ef4444;
+      --red-glow: rgba(239, 68, 68, 0.25);
+      --orange: #f97316;
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: var(--bg-color);
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      overflow: hidden;
+    }
+
+    /* AMBIENT */
+    .ambient {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.15;
+    }
+
+    .blob.a {
+      width: 500px;
+      height: 500px;
+      background: var(--red);
+      top: -80px;
+      right: -80px;
+      animation: bdrift 10s ease-in-out infinite alternate;
+    }
+
+    .blob.b {
+      width: 380px;
+      height: 380px;
+      background: var(--orange);
+      bottom: -80px;
+      left: -60px;
+      animation: bdrift 13s ease-in-out infinite alternate-reverse;
+      opacity: 0.1;
+    }
+
+    .blob.c {
+      width: 300px;
+      height: 300px;
+      background: var(--accent);
+      top: 40%;
+      left: 30%;
+      animation: bdrift 8s ease-in-out infinite alternate;
+      opacity: 0.08;
+    }
+
+    @keyframes bdrift {
+      from {
+        transform: translate(0, 0)scale(1);
+      }
+
+      to {
+        transform: translate(40px, 30px)scale(1.15);
+      }
+    }
+
+    /* LOGO */
+    .logo {
+      position: fixed;
+      top: 28px;
+      left: 36px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .pip {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 10px var(--red);
+      animation: pip 0.6s step-end infinite;
+    }
+
+    @keyframes pip {
+
+      0%,
+      49% {
+        opacity: 1;
+      }
+
+      50%,
+      100% {
+        opacity: 0.2;
+      }
+    }
+
+    /* PAGE */
+    .page {
+      position: relative;
+      z-index: 1;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 72px;
+      padding: 0 60px;
+    }
+
+    @media(max-width:860px) {
+      .page {
+        flex-direction: column;
+        gap: 32px;
+        padding: 60px 24px;
+        overflow-y: auto;
+        height: auto;
+        min-height: 100vh;
+      }
+    }
+
+    /* =========================================
+   RACK / SERVER — version 500 (tout fume)
+   ========================================= */
+    .scene {
+      position: relative;
+      width: 300px;
+      flex-shrink: 0;
+    }
+
+    .rack {
+      width: 280px;
+      margin: 0 auto;
+      background: linear-gradient(160deg, #130a0a 0%, #0a0808 100%);
+      border: 1px solid rgba(239, 68, 68, 0.12);
+      border-radius: 10px 10px 6px 6px;
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.04), 0 50px 100px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 40px rgba(239, 68, 68, 0.06);
+      padding: 14px 16px 16px;
+      position: relative;
+      animation: rack-shake 0.12s ease-in-out infinite;
+    }
+
+    @keyframes rack-shake {
+
+      0%,
+      100% {
+        transform: translate(0, 0);
+      }
+
+      25% {
+        transform: translate(-1px, 0);
+      }
+
+      75% {
+        transform: translate(1px, 0);
+      }
+    }
+
+    .rack::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 28px;
+      right: 28px;
+      height: 8px;
+      background: #100a0a;
+      border: 1px solid rgba(239, 68, 68, 0.1);
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+    }
+
+    /* Toutes les unités sont en erreur */
+    .ru {
+      border-radius: 5px;
+      margin-bottom: 7px;
+      overflow: hidden;
+    }
+
+    .ru:last-child {
+      margin-bottom: 0;
+    }
+
+    .ru-dead {
+      height: 38px;
+      background: linear-gradient(90deg, #1a0808, #120608);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      gap: 10px;
+      position: relative;
+      box-shadow: inset 0 0 16px rgba(239, 68, 68, 0.06);
+      animation: flicker var(--fd, 0.14s) step-end infinite;
+      animation-delay: var(--fdl, 0s);
+    }
+
+    @keyframes flicker {
+
+      0%,
+      68%,
+      100% {
+        opacity: 1;
+      }
+
+      70% {
+        opacity: 0.75;
+      }
+
+      71% {
+        opacity: 1;
+      }
+    }
+
+    .ru-dead.critical {
+      height: 50px;
+      background: linear-gradient(90deg, #220a0a, #180608);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      box-shadow: inset 0 0 30px rgba(239, 68, 68, 0.12), 0 0 20px rgba(239, 68, 68, 0.08);
+      animation: flicker-crit 0.11s step-end infinite;
+    }
+
+    @keyframes flicker-crit {
+
+      0%,
+      60%,
+      100% {
+        background: linear-gradient(90deg, #220a0a, #180608);
+        opacity: 1;
+      }
+
+      62% {
+        background: linear-gradient(90deg, #2e0c0c, #220808);
+        opacity: 0.8;
+      }
+
+      64% {
+        background: linear-gradient(90deg, #220a0a, #180608);
+        opacity: 1;
+      }
+
+      80% {
+        opacity: 0.7;
+      }
+
+      82% {
+        opacity: 1;
+      }
+    }
+
+    .ru-label {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 1.8px;
+      color: rgba(239, 68, 68, 0.45);
+      text-transform: uppercase;
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    .ru-label.crit {
+      color: var(--red);
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .led-r {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 8px var(--red), 0 0 16px var(--red-glow);
+    }
+
+    .led-r.blink {
+      animation: lrb var(--lb, 0.18s) step-end infinite;
+      animation-delay: var(--lbd, 0s);
+    }
+
+    .led-r.blink2 {
+      animation: lrb2 0.35s ease-in-out infinite;
+    }
+
+    @keyframes lrb {
+
+      0%,
+      49% {
+        opacity: 1;
+      }
+
+      50%,
+      100% {
+        opacity: 0.08;
+      }
+    }
+
+    @keyframes lrb2 {
+
+      0%,
+      100% {
+        opacity: 1;
+        box-shadow: 0 0 8px var(--red), 0 0 16px var(--red-glow);
+      }
+
+      50% {
+        opacity: 0.4;
+        box-shadow: none;
+      }
+    }
+
+    .fire-icon {
+      font-size: 16px;
+      animation: shake 0.45s ease-in-out infinite;
+    }
+
+    .fire-icon.big {
+      font-size: 22px;
+      animation: shake 0.3s ease-in-out infinite;
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: rotate(-5deg);
+      }
+
+      50% {
+        transform: rotate(5deg);
+      }
+    }
+
+    /* Vent */
+    .vent {
+      display: flex;
+      gap: 3px;
+      margin-top: 8px;
+      justify-content: center;
+    }
+
+    .vbar {
+      width: 16px;
+      height: 4px;
+      background: rgba(239, 68, 68, 0.08);
+      border-radius: 2px;
+    }
+
+    /* Heat */
+    .heat {
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 260px;
+      height: 35px;
+      background: radial-gradient(ellipse, rgba(239, 68, 68, 0.35) 0%, rgba(249, 115, 22, 0.15) 40%, transparent 70%);
+      animation: hpulse 0.8s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes hpulse {
+      from {
+        opacity: 0.6;
+        transform: translateX(-50%)scaleX(1);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(-50%)scaleX(1.25);
+      }
+    }
+
+    /* SMOKE — plus dense, plus large */
+    .smoke-box {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      right: 0;
+      height: 240px;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .puff {
+      position: absolute;
+      bottom: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(155, 60, 60, 0.18) 0%, rgba(140, 140, 160, 0.14) 50%, transparent 70%);
+      animation: prise var(--d) ease-out infinite;
+      animation-delay: var(--dl);
+      opacity: 0;
+    }
+
+    @keyframes prise {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.3);
+      }
+
+      18% {
+        opacity: 0.7;
+      }
+
+      60% {
+        opacity: 0.35;
+        transform: translate(var(--dx), -140px) scale(1.8);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(var(--dx2), -230px) scale(2.8);
+      }
+    }
+
+    /* Beaucoup plus de puffs, venant de toute la largeur */
+    .puff:nth-child(1) {
+      width: 70px;
+      height: 70px;
+      left: 15%;
+      --d: 2.6s;
+      --dl: 0s;
+      --dx: -15px;
+      --dx2: -28px;
+    }
+
+    .puff:nth-child(2) {
+      width: 55px;
+      height: 55px;
+      left: 30%;
+      --d: 3.0s;
+      --dl: 0.3s;
+      --dx: 18px;
+      --dx2: 30px;
+    }
+
+    .puff:nth-child(3) {
+      width: 80px;
+      height: 80px;
+      left: 45%;
+      --d: 2.4s;
+      --dl: 0.6s;
+      --dx: -8px;
+      --dx2: -20px;
+    }
+
+    .puff:nth-child(4) {
+      width: 50px;
+      height: 50px;
+      left: 60%;
+      --d: 3.4s;
+      --dl: 0.9s;
+      --dx: 24px;
+      --dx2: 38px;
+    }
+
+    .puff:nth-child(5) {
+      width: 65px;
+      height: 65px;
+      left: 75%;
+      --d: 2.8s;
+      --dl: 1.2s;
+      --dx: -22px;
+      --dx2: -36px;
+    }
+
+    .puff:nth-child(6) {
+      width: 45px;
+      height: 45px;
+      left: 22%;
+      --d: 3.2s;
+      --dl: 1.5s;
+      --dx: 10px;
+      --dx2: 18px;
+    }
+
+    .puff:nth-child(7) {
+      width: 72px;
+      height: 72px;
+      left: 50%;
+      --d: 2.6s;
+      --dl: 0.2s;
+      --dx: -16px;
+      --dx2: -25px;
+    }
+
+    .puff:nth-child(8) {
+      width: 52px;
+      height: 52px;
+      left: 65%;
+      --d: 3.6s;
+      --dl: 0.5s;
+      --dx: 28px;
+      --dx2: 42px;
+    }
+
+    .puff:nth-child(9) {
+      width: 60px;
+      height: 60px;
+      left: 8%;
+      --d: 2.9s;
+      --dl: 1.8s;
+      --dx: -20px;
+      --dx2: -35px;
+    }
+
+    .puff:nth-child(10) {
+      width: 48px;
+      height: 48px;
+      left: 82%;
+      --d: 3.1s;
+      --dl: 0.8s;
+      --dx: 12px;
+      --dx2: 20px;
+    }
+
+    /* Sparks — partout */
+    .sp {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--orange);
+      box-shadow: 0 0 8px var(--orange);
+      animation: sfly var(--sd) ease-out infinite;
+      animation-delay: var(--sdl);
+      opacity: 0;
+    }
+
+    @keyframes sfly {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0)scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(var(--sx), var(--sy))scale(0);
+      }
+    }
+
+    .sp:nth-child(1) {
+      width: 4px;
+      height: 4px;
+      left: 18%;
+      bottom: 10px;
+      --sd: 0.55s;
+      --sdl: 0s;
+      --sx: -14px;
+      --sy: -32px;
+    }
+
+    .sp:nth-child(2) {
+      width: 3px;
+      height: 3px;
+      left: 35%;
+      bottom: 14px;
+      --sd: 0.5s;
+      --sdl: 0.18s;
+      --sx: 12px;
+      --sy: -26px;
+    }
+
+    .sp:nth-child(3) {
+      width: 5px;
+      height: 5px;
+      left: 50%;
+      bottom: 6px;
+      --sd: 0.7s;
+      --sdl: 0.36s;
+      --sx: -9px;
+      --sy: -40px;
+      background: var(--red);
+      box-shadow: 0 0 8px var(--red);
+    }
+
+    .sp:nth-child(4) {
+      width: 3px;
+      height: 3px;
+      left: 65%;
+      bottom: 12px;
+      --sd: 0.52s;
+      --sdl: 0.54s;
+      --sx: 16px;
+      --sy: -24px;
+    }
+
+    .sp:nth-child(5) {
+      width: 4px;
+      height: 4px;
+      left: 78%;
+      bottom: 8px;
+      --sd: 0.62s;
+      --sdl: 0.72s;
+      --sx: -5px;
+      --sy: -34px;
+      background: #fbbf24;
+      box-shadow: 0 0 6px #fbbf24;
+    }
+
+    .sp:nth-child(6) {
+      width: 3px;
+      height: 3px;
+      left: 42%;
+      bottom: 16px;
+      --sd: 0.48s;
+      --sdl: 0.9s;
+      --sx: 20px;
+      --sy: -20px;
+    }
+
+    .sp:nth-child(7) {
+      width: 5px;
+      height: 5px;
+      left: 25%;
+      bottom: 10px;
+      --sd: 0.65s;
+      --sdl: 1.1s;
+      --sx: -18px;
+      --sy: -38px;
+      background: var(--red);
+      box-shadow: 0 0 8px var(--red);
+    }
+
+    /* Cables */
+    .cables {
+      width: 280px;
+      margin: 0 auto;
+      height: 18px;
+    }
+
+    .cables svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* =========================================
+   CONTENT
+   ========================================= */
+    .content {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      max-width: 420px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 14px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 20px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--red);
+      text-transform: uppercase;
+      width: fit-content;
+      animation: badge-pulse 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes badge-pulse {
+      from {
+        box-shadow: 0 0 0 0 transparent;
+      }
+
+      to {
+        box-shadow: 0 0 12px rgba(239, 68, 68, 0.2);
+      }
+    }
+
+    .bdot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 8px var(--red);
+      animation: pip 0.6s step-end infinite;
+    }
+
+    .bignum {
+      font-size: clamp(88px, 13vw, 128px);
+      font-weight: 700;
+      line-height: 0.85;
+      letter-spacing: -6px;
+      color: var(--text-primary);
+      position: relative;
+      display: inline-block;
+    }
+
+    .bignum::after {
+      content: '500';
+      position: absolute;
+      left: 5px;
+      top: 5px;
+      color: var(--red);
+      opacity: 0.15;
+      z-index: -1;
+      animation: ng 4s ease-in-out infinite;
+    }
+
+    @keyframes ng {
+
+      0%,
+      80%,
+      100% {
+        transform: none;
+        opacity: 0.15;
+      }
+
+      82% {
+        transform: translateX(-8px);
+        opacity: 0.35;
+      }
+
+      85% {
+        transform: translateX(5px);
+        opacity: 0.22;
+      }
+
+      88% {
+        transform: none;
+        opacity: 0.15;
+      }
+    }
+
+    .headline {
+      font-size: clamp(18px, 2.5vw, 24px);
+      font-weight: 300;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      line-height: 1.5;
+    }
+
+    .sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      opacity: 0.55;
+      font-weight: 300;
+      line-height: 1.8;
+    }
+
+    /* Log */
+    .log {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .log::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      opacity: 0.5;
+    }
+
+    .log-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 16px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .wd {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .wd-r {
+      background: #ff5f57;
+    }
+
+    .wd-y {
+      background: #febc2e;
+    }
+
+    .wd-g {
+      background: #28c840;
+    }
+
+    .log-tag {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      opacity: 0.4;
+      text-transform: uppercase;
+    }
+
+    .log-body {
+      padding: 12px 16px 14px;
+    }
+
+    .ll {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      line-height: 2;
+      opacity: 0;
+      animation: llin 0.2s ease-out forwards;
+      white-space: nowrap;
+    }
+
+    .ll:nth-child(1) {
+      animation-delay: 0.2s;
+    }
+
+    .ll:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+
+    .ll:nth-child(3) {
+      animation-delay: 0.8s;
+    }
+
+    .ll:nth-child(4) {
+      animation-delay: 1.1s;
+    }
+
+    .ll:nth-child(5) {
+      animation-delay: 1.4s;
+    }
+
+    .ll:nth-child(6) {
+      animation-delay: 1.7s;
+    }
+
+    @keyframes llin {
+      from {
+        opacity: 0;
+        transform: translateX(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .ok {
+      color: #34d399;
+    }
+
+    .wn {
+      color: #fbbf24;
+    }
+
+    .er {
+      color: #f87171;
+    }
+
+    .ac {
+      color: #a78bfa;
+    }
+
+    .dm {
+      color: var(--text-muted);
+      opacity: 0.45;
+    }
+
+    .cur {
+      display: inline-block;
+      width: 6px;
+      height: 11px;
+      background: var(--red);
+      vertical-align: middle;
+      margin-left: 2px;
+      border-radius: 1px;
+      animation: blink 0.6s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    /* Button */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 28px;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-main);
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 10px;
+      letter-spacing: 0.3px;
+      width: fit-content;
+      box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.35), 0 8px 32px rgba(124, 58, 237, 0.35);
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.55), 0 16px 48px rgba(124, 58, 237, 0.5);
+      background: #8b47ff;
+    }
+
+    .barrow {
+      transition: transform 0.15s;
+      font-size: 16px;
+      position: relative;
+    }
+
+    .btn:hover .barrow {
+      transform: translateX(-3px);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="ambient">
+    <div class="blob a"></div>
+    <div class="blob b"></div>
+    <div class="blob c"></div>
+  </div>
+
+  <div class="logo">
+    <div class="pip"></div>LX Cloud
+  </div>
+
+  <div class="page">
+
+    <!-- SERVER SCENE -->
+    <div class="scene">
+      <div style="position:relative;width:280px;margin:0 auto;">
+
+        <!-- Smoke + sparks — beaucoup plus intenses -->
+        <div class="smoke-box">
+          <div class="puff"></div>
+          <div class="puff"></div>
+          <div class="puff"></div>
+          <div class="puff"></div>
+          <div class="puff"></div>
+          <div class="puff"></div>
+          <div class="puff"></div>
+          <div class="puff"></div>
+          <div class="puff"></div>
+          <div class="puff"></div>
+          <div class="sp"></div>
+          <div class="sp"></div>
+          <div class="sp"></div>
+          <div class="sp"></div>
+          <div class="sp"></div>
+          <div class="sp"></div>
+          <div class="sp"></div>
+        </div>
+
+        <!-- RACK — tout en erreur -->
+        <div class="rack">
+
+          <div class="ru">
+            <div class="ru-dead" style="--fd:0.2s;--fdl:0s;">
+              <div class="fire-icon">🔥</div>
+              <div class="ru-label">SRV-01 / NGINX — DEAD</div>
+              <div class="led-r blink" style="--lb:0.14s;"></div>
+            </div>
+          </div>
+
+          <div class="ru">
+            <div class="ru-dead critical">
+              <div class="fire-icon big">🔥</div>
+              <div class="ru-label crit">
+                SRV-02 — KERNEL PANIC<br>
+                <span style="font-size:7px;font-weight:400;opacity:0.7;">ERREUR CRITIQUE [HTTP {{ error.code }}]</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;">
+                <div class="led-r blink" style="--lb:0.12s;--lbd:0s;"></div>
+                <div class="led-r blink" style="--lb:0.12s;--lbd:0.06s;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ru">
+            <div class="ru-dead" style="--fd:0.18s;--fdl:0.05s;">
+              <div class="fire-icon">💨</div>
+              <div class="ru-label">SRV-03 / REDIS — NO RESPONSE</div>
+              <div class="led-r blink" style="--lb:0.22s;--lbd:0.1s;"></div>
+            </div>
+          </div>
+
+          <div class="ru">
+            <div class="ru-dead" style="--fd:0.25s;--fdl:0.08s;opacity:0.7;">
+              <div class="fire-icon">🔥</div>
+              <div class="ru-label">SRV-04 / DB — TIMEOUT</div>
+              <div class="led-r blink2"></div>
+            </div>
+          </div>
+
+          <div class="ru">
+            <div class="ru-dead" style="--fd:0.3s;--fdl:0.12s;opacity:0.5;">
+              <div class="fire-icon">💀</div>
+              <div class="ru-label">SRV-05 / BACKUP — UNREACHABLE</div>
+              <div class="led-r blink" style="--lb:0.4s;"></div>
+            </div>
+          </div>
+
+          <div class="vent">
+            <div class="vbar"></div>
+            <div class="vbar"></div>
+            <div class="vbar"></div>
+            <div class="vbar"></div>
+            <div class="vbar"></div>
+            <div class="vbar"></div>
+            <div class="vbar"></div>
+            <div class="vbar"></div>
+            <div class="vbar"></div>
+            <div class="vbar"></div>
+            <div class="vbar"></div>
+          </div>
+
+          <div class="heat"></div>
+        </div>
+
+        <!-- Cables -->
+        <div class="cables">
+          <svg viewBox="0 0 280 18" fill="none">
+            <path d="M20 2 Q60 16 100 8 Q140 0 180 14 Q220 18 260 6" stroke="rgba(239,68,68,0.22)" stroke-width="2" />
+            <path d="M10 10 Q50 2 90 16 Q130 18 170 8 Q210 0 260 14" stroke="rgba(249,115,22,0.12)" stroke-width="2" />
+            <path d="M30 16 Q80 3 120 15 Q160 18 200 6 Q240 0 272 12" stroke="rgba(239,68,68,0.15)"
+              stroke-width="1.5" />
+            <path d="M5 6 Q45 18 85 10 Q125 2 165 16 Q205 18 260 9" stroke="rgba(255,255,255,0.03)" stroke-width="2" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <div class="badge">
+        <div class="bdot"></div>Panne totale
+      </div>
+      <div class="bignum">{{ error.code }}</div>
+      <div class="headline">Erreur serveur</div>
+      <div class="sub">
+        Le cluster entier est parti en fumée.<br>
+        Nos ingénieurs ont été réveillés à 3h du matin.
+      </div>
+
+      <div class="log">
+        <div class="log-bar">
+          <div class="wd wd-r"></div>
+          <div class="wd wd-y"></div>
+          <div class="wd wd-g"></div>
+          <span class="log-tag">INCIDENT LOG — CLUSTER</span>
+        </div>
+        <div class="log-body">
+          <div class="ll"><span class="dm">00:01</span>&nbsp; <span class="ok">BOOT</span>&nbsp;&nbsp; LX-Cloud Cluster
+            v4.1 — OK</div>
+          <div class="ll"><span class="dm">03:47</span>&nbsp; <span class="wn">WARN</span>&nbsp;&nbsp; Charge CPU
+            anormale [98%] sur SRV-02</div>
+          <div class="ll"><span class="dm">03:47</span>&nbsp; <span class="er">ERROR</span>&nbsp; Kernel panic — SRV-02
+            [{{ error.code }}]</div>
+          <div class="ll"><span class="dm">03:47</span>&nbsp; <span class="er">CRIT</span>&nbsp;&nbsp; Cascade failure —
+            SRV-01, 03, 04, 05</div>
+          <div class="ll"><span class="dm">03:48</span>&nbsp; <span class="er">CRIT</span>&nbsp;&nbsp; Surchauffe
+            généralisée — datacenter HS</div>
+          <div class="ll"><span class="dm">03:48</span>&nbsp; <span class="dm">SOS</span>&nbsp;&nbsp;&nbsp; Ingénieurs
+            alertés — intervention en cours<span class="cur"></span></div>
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+</body>
+
+</html>
