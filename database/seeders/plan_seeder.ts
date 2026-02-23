@@ -5,7 +5,6 @@ export default class extends BaseSeeder {
   async run() {
     await Plan.query().delete()
 
-    // database/seeders/plan_seeder.ts
     await Plan.createMany([
       {
         name: 'Gratuit',
@@ -18,8 +17,8 @@ export default class extends BaseSeeder {
       },
       {
         name: 'Premium',
-        price: 9.9, // Prix psychologique
-        quotaGb: 70, // On double pour le même prix, ça va se vendre comme des petits pains
+        price: 9.9,
+        quotaGb: 70,
         stockAvailable: 100,
         isActive: true,
         isFeatured: true,
@@ -30,7 +29,7 @@ export default class extends BaseSeeder {
         price: 24,
         quotaGb: 500,
         stockAvailable: 0,
-        isActive: false, // Toujours en préparation
+        isActive: false,
         isFeatured: false,
         description: 'Performance Maximum|Espace massif|Support VIP 24/7|Accès aux bêtas',
       },
