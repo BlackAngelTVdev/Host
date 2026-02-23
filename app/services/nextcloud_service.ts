@@ -45,7 +45,7 @@ export default class NextcloudService {
         }),
       })
 
-      const data: any = await response.json() // Corrigé : any
+      const data: any = await response.json()
       const success = data.ocs.meta.statuscode === 100
 
       return {
@@ -70,7 +70,7 @@ export default class NextcloudService {
         }
       )
 
-      const data: any = await response.json() // Corrigé : any
+      const data: any = await response.json() 
       if (data.ocs.meta.statuscode !== 100) return { success: false }
 
       const { quota, email, groups } = data.ocs.data
@@ -99,7 +99,7 @@ export default class NextcloudService {
           `${this.cloudUrl}/ocs/v1.php/cloud/users?search=${identifier}&format=json`,
           { headers: this.getHeaders() }
         )
-        const searchData: any = await res.json() // Corrigé : any
+        const searchData: any = await res.json()
         const users = searchData.ocs.data.users || []
 
         let foundUsername = null
@@ -108,7 +108,7 @@ export default class NextcloudService {
             `${this.cloudUrl}/ocs/v1.php/cloud/users/${u}?format=json`,
             { headers: this.getHeaders() }
           )
-          const detailData: any = await detailRes.json() // Corrigé : any
+          const detailData: any = await detailRes.json()
           if (detailData.ocs.data.email === identifier) {
             foundUsername = u
             break
@@ -131,7 +131,7 @@ export default class NextcloudService {
       const response = await fetch(`${this.cloudUrl}/ocs/v1.php/cloud/user?format=json`, {
         headers: this.getHeaders(userAuth),
       })
-      const data: any = await response.json() // Corrigé : any
+      const data: any = await response.json()
 
       return {
         success: data.ocs.meta.statuscode === 100,
@@ -152,8 +152,7 @@ export default class NextcloudService {
         `${this.cloudUrl}/ocs/v1.php/apps/serverinfo/api/v1/info?format=json`,
         { headers: this.getHeaders() }
       )
-      const json: any = await response.json() // Corrigé : any
-
+      const json: any = await response.json()
       const freeBytes = json?.ocs?.data?.nextcloud?.system?.freespace
 
       if (typeof freeBytes === 'undefined') {
@@ -173,7 +172,7 @@ export default class NextcloudService {
     const freeSpaceGb = await this.getServerFreeSpace()
     const plans = await Plan.all()
 
-    const limits: Record<string, number> = { // Corrigé : Record pour l'indexation
+    const limits: Record<string, number> = { 
       Gratuit: 70,
       Premium: 8,
       Ultra: 2,
@@ -203,7 +202,7 @@ export default class NextcloudService {
         `${this.cloudUrl}/ocs/v1.php/cloud/groups/${groupName}?format=json`,
         { headers: this.getHeaders() }
       )
-      const data: any = await response.json() // Corrigé : any
+      const data: any = await response.json() 
 
       const users = data?.ocs?.data?.users || []
       return users.length
@@ -265,7 +264,7 @@ export default class NextcloudService {
         body: new URLSearchParams({ key: 'quota', value: quota }),
       })
 
-      const data: any = await response.json() // Corrigé : any
+      const data: any = await response.json()
 
       if (data.ocs.meta.statuscode === 100) {
         const paidGroups = ['Premium', 'Ultra']

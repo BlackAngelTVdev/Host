@@ -29,7 +29,6 @@
           <input type="number" name="quotaGb" value="{{ plan.quotaGb }}">
         </div>
 
-        {{-- Nouveau : Description avec séparateur | --}}
         <div class="input-box full-width">
           <label>Features (sépare avec | )</label>
           <input type="text" name="description" value="{{ plan.description || '' }}"
@@ -50,7 +49,6 @@
         <div class="input-box toggle-box">
           <label>Ventes Ouvertes (Forcer l'arrêt)</label>
           <div class="switch-container">
-            {{-- On check selon si le plan N'EST PAS désactivé manuellement --}}
             <input type="checkbox" id="isActive" name="isActive" {{ !plan.isManuallyDisabled ? 'checked' : '' }}>
             <label for="isActive" class="switch-label">
               <span class="status-text on">OUVERT</span>

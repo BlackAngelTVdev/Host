@@ -8,13 +8,12 @@
 
     <form action="{{ route('auth.login.store') }}" method="POST" class="login-form">
       {{ csrfField() }}
-      {{-- Identifiant (Username ou Email) --}}
+
       <div class="input-group">
         <label for="uid">Nom d'utilisateur ou E-mail</label>
         <input type="text" id="uid" name="uid" placeholder="Pseudo ou email" required>
       </div>
 
-      {{-- Password --}}
       <div class="input-group">
         <label for="password">Mot de passe</label>
         <input type="password" id="password" name="password" placeholder="••••••••" required>

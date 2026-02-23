@@ -44,7 +44,7 @@
       </div>
     </div>
 
-    {{-- Form d'ajout --}}
+
     <form action="{{ route('admin.discounts.store') }}" method="POST" class="discount-quick-form">
       {{ csrfField() }}
       <input type="text" name="code" placeholder="CODE (ex: PROMO10)" required>
@@ -56,7 +56,7 @@
 
       <input type="number" name="value" placeholder="Valeur" step="0.01" required>
 
-      {{-- NOUVEAU : Champ pour la durée --}}
+
       <input type="number" name="duration_months" placeholder="Durée (mois) - vide = ∞" min="1">
 
       <input type="number" name="max_uses" placeholder="Max usages (∞)">
@@ -72,7 +72,7 @@
       <tr>
         <th>Code</th>
         <th>Réduction</th>
-        <th>Durée</th> {{-- Nouvelle colonne --}}
+        <th>Durée</th>
         <th>Usage</th>
         <th>Expiration</th>
         <th>Action</th>
@@ -84,7 +84,7 @@
         <td class="plan-name">{{ discount.code }}</td>
         <td>{{ discount.value }}{{ discount.type === 'percentage' ? '%' : ' CHF' }}</td>
         
-        {{-- Affichage de la durée --}}
+
         <td>
           @if(discount.durationMonths)
             {{ discount.durationMonths }} mois

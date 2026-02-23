@@ -65,12 +65,12 @@ export default class SubscriptionsController {
         cancel_url: `${env.get('APP_URL')}/dashboard/${user.username}?payment=cancel`,
         customer_email: user.email,
         metadata: {
-          // IMPORTANT: Sans DB locale, le username est notre seule clé
+
           nextcloudUsername: user.username, 
           planId: selectedPlan.id,
           promoCode: promoCode || null,
         },
-        // On rajoute les metadata au niveau de l'abonnement aussi (utile pour les webhooks)
+
         subscription_data: {
           metadata: {
             nextcloudUsername: user.username,
@@ -136,7 +136,7 @@ export default class SubscriptionsController {
     }
 
     try {
-      // Recherche du client Stripe par email
+
       const customers = await stripe.customers.list({
         email: sessionUser.email,
         limit: 1,

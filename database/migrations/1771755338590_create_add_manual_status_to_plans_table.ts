@@ -5,7 +5,7 @@ export default class extends BaseSchema {
 
   public async up() {
     this.schema.alterTable(this.tableName, (table) => {
-      // Si c'est true, on ne vend pas, peu importe le stock
+
       table.boolean('is_manually_disabled').defaultTo(false).after('is_active')
     })
   }

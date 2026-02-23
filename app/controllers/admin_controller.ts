@@ -4,10 +4,10 @@ import type { HttpContext } from '@adonisjs/core/http'
 import NextcloudService from '#services/nextcloud_service'
 import { inject } from '@adonisjs/core'
 import { DateTime } from 'luxon'
-import Stripe from 'stripe' // <--- AJOUTE ÇA
-import env from '#start/env' // <--- AJOUTE ÇA
+import Stripe from 'stripe' 
+import env from '#start/env'
 
-// Initialisation de Stripe avec ta clé secrète
+
 const stripe = new Stripe(env.get('STRIPE_SECRET_KEY'))
 
 @inject()
@@ -37,15 +37,14 @@ export default class AdminController {
    */
   async update({ params, request, response, session }: HttpContext) {
     const plan = await Plan.findOrFail(params.id)
-    const data = request.only(['isActive' /* ... autres champs */])
+    const data = request.only(['isActive'])
 
-    // L'astuce : si la checkbox "Ventes Ouvertes" est décochée,
-    // on met isManuallyDisabled à true.
+
     plan.isManuallyDisabled = !data.isActive
 
     await plan.save()
 
-    // On relance le calcul pour mettre à jour isActive selon le stock
+
     await this.nextcloudService.refreshPlansStock()
 
     session.flash('success', 'Réglages enregistrés')
@@ -55,9 +54,8 @@ export default class AdminController {
   /**
    * Coupons : Création d'un code promo (Sync avec Stripe)
    */
-  // AdminController.ts
   async storeDiscount({ request, response, session }: HttpContext) {
-    // AJOUT : On récupère TOUT ce qui vient du formulaire
+   
     const data = request.only([
       'code',
       'type',
@@ -70,7 +68,7 @@ export default class AdminController {
     const codeUpper = data.code.toUpperCase().trim()
 
     try {
-      // 1. Sync avec Stripe
+
       await stripe.coupons.create({
         duration: data.duration_months ? 'repeating' : 'forever',
         duration_in_months: data.duration_months ? Number(data.duration_months) : undefined,
@@ -80,14 +78,14 @@ export default class AdminController {
         id: codeUpper,
       })
 
-      // 2. Création en DB (Adonis fera la conversion camelCase -> snake_case grâce au modèle)
+   
       await Discount.create({
         code: codeUpper,
         type: data.type,
         value: data.value,
         durationMonths: data.duration_months || null,
-        maxUses: data.max_uses || null, // Sera maintenant rempli
-        expiresAt: data.expires_at ? DateTime.fromISO(data.expires_at) : null, // Sera maintenant rempli
+        maxUses: data.max_uses || null,
+        expiresAt: data.expires_at ? DateTime.fromISO(data.expires_at) : null, 
         usedCount: 0,
       })
 
@@ -106,19 +104,16 @@ export default class AdminController {
     const discount = await Discount.findOrFail(params.id)
 
     try {
-      // 1. On tente de le supprimer chez Stripe d'abord
-      // On utilise discount.code car c'est l'ID qu'on a donné au coupon Stripe
+     
       try {
         await stripe.coupons.del(discount.code.toUpperCase())
       } catch (stripeError) {
-        // Si le coupon n'existe déjà plus sur Stripe, on log juste l'info
-        // sans bloquer la suppression en base de données locale
+        
         console.warn(
           `Coupon ${discount.code} non trouvé sur Stripe, suppression locale uniquement.`
         )
       }
 
-      // 2. On le supprime de notre base de données
       await discount.delete()
 
       session.flash('success', `Le code ${discount.code} a été supprimé partout.`)

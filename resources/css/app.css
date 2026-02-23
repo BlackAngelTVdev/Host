@@ -1,6 +1,6 @@
 @import url(./var.css);
 
-/* --- RESET & BASE --- */
+
 * {
     margin: 0;
     padding: 0;
@@ -15,7 +15,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Background Effect (Grille + Glow) */
+
 body::after {
     content: "";
     position: fixed;
@@ -66,7 +66,7 @@ nav {
     gap: 1.5rem;
 }
 
-/* Liens classiques (Login, Mon Panel) */
+
 .nav-link {
     color: var(--text-muted);
     text-decoration: none;

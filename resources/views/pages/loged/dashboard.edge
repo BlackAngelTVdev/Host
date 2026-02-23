@@ -42,7 +42,6 @@
       </div>
       <a href="{{ route('home') }}#pricing" class="btn-upgrade">Voir les offres</a>
     </div>
-    {{-- On n'affiche la gestion que si l'utilisateur n'est PAS dans le groupe Free --}}
     @if(!user.groups.includes('Free'))
     <div class="manage-sub-box">
       <h3>Gestion de l'offre</h3>
@@ -60,7 +59,7 @@
 
 </div>
 
-{{-- SCRIPT POUR LE POP-UP --}}
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
@@ -76,7 +75,7 @@
         background: '#1a1a1a',
         color: '#fff'
       }).then(() => {
-        // On ne nettoie l'URL que quand l'utilisateur clique sur "OK"
+
         window.history.replaceState({}, document.title, window.location.pathname)
       })
 

@@ -9,7 +9,7 @@ const ALLOWED_DOMAINS = [
   'proton.me',
   'protonmail.com',
   'protonmail.ch',
-  'pm.me', // L'alias court de Proton
+  'pm.me',
 
   // --- LE TOP MONDIAL ---
   'gmail.com',
@@ -125,7 +125,6 @@ export const registerValidator = vine.compile(
         const lowerValue = value.toLowerCase()
         const [localPart, domain] = lowerValue.split('@')
 
-        // 1. Détection du "+" (Anti-triche)
         if (localPart.includes('+')) {
           field.report(
             "Les alias (contenant un '+') sont interdits. Utilise ton mail principal.",
@@ -135,7 +134,6 @@ export const registerValidator = vine.compile(
           return lowerValue
         }
 
-        // 2. Check Liste Blanche
         if (!ALLOWED_DOMAINS.includes(domain)) {
           field.report(
             'Seuls les emails classiques (Gmail, Outlook, Yahoo...) sont autorisés.',

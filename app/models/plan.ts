@@ -23,9 +23,9 @@ export default class Plan extends BaseModel {
   @column()
   declare isFeatured: boolean
 
-  // --- CE QU'IL FAUT AJOUTER ---
+
   @column()
-  declare description: string // Pour stocker "Feature 1|Feature 2|..."
+  declare description: string 
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -35,9 +35,7 @@ export default class Plan extends BaseModel {
 
   @column()
   declare isManuallyDisabled: boolean
-  // -----------------------------
 
-  // Getter pour savoir si on peut encore l'acheter
   public get hasStock() {
     return this.isActive && this.stockAvailable > 0
   }

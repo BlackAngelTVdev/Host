@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>LaxaCube | Cloud Suisse</title>
 
-  {{-- On charge toujours le CSS global --}}
+
   @vite(['resources/css/app.css'])
 
-  {{-- On charge le CSS spécifique passé en argument --}}
+
   @if(css)
   @vite(['resources/css/' + css + '.css'])
   @endif
@@ -23,9 +23,7 @@
     </a>
     <nav>
       @if(session.has('user'))
-      {{-- On récupère l'user envoyé par le controller ou la session --}}
 
-      {{-- ONGLET ADMIN : Visible seulement si le groupe 'admin' est présent --}}
       @if(user && user.groups && user.groups.includes('admin'))
       <a href="{{ route('admin.index')}}" class="nav-link admin-link" style="color: #ff4d4d; font-weight: bold;">
         ⚙️ Admin
@@ -46,7 +44,7 @@
       @endif
     </nav>
   </header>
-  {{-- Système de Flash Messages --}}
+
   @if(flashMessages.has('success') || flashMessages.has('error'))
   <div id="toast-container">
     <div class="toast {{ flashMessages.has('success') ? 'toast-success' : 'toast-error' }}">
@@ -60,7 +58,7 @@
   <script>
     const toast = document.querySelector('.toast');
     if (toast) {
-      // Supprime le toast après 5 secondes
+
       setTimeout(() => {
         toast.style.transform = 'translateX(120%)';
         toast.style.opacity = '0';

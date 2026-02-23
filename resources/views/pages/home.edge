@@ -72,7 +72,7 @@
 
             <div class="plan-actions">
               @if(!plan.isActive)
-              {{-- inactive, rien --}}
+
               @elseif(plan.stockAvailable > 0)
               @let(isConnected = !!user)
               @let(loggedUsername = session.get('user')?.username)
@@ -112,7 +112,7 @@
     <section class="stack-section" id="footer-section">
       <div class="footer-slide-content">
 
-        {{-- SECTION À PROPOS --}}
+
         <div class="about-text-container" style="max-width: 850px; margin: 0 auto 60px auto; text-align: left;">
           <h2 style="font-size: 2.2rem; margin-bottom: 25px; color: var(--text-primary); font-weight: 800;">
             C'est quoi l'idée ?
@@ -140,7 +140,7 @@
           </p>
         </div>
 
-        {{-- TON FOOTER (Déjà existant) --}}
+
         <div class="footer-top-row">
           <div class="footer-brand">
             <span class="logo-text">LAXACUBE</span>
@@ -203,22 +203,22 @@
     let current = 0;
     let isAnimating = false;
 
-    // ── Utilitaire : nettoie toutes les classes d'une section ──
+
     function clean(section) {
       section.classList.remove('slide-in-up', 'slide-out-up', 'slide-out-down');
     }
 
-    // ── Place chaque section dans son état initial sans anim ──
+
     function applyStateInstant(index) {
       sections.forEach((s, i) => {
         s.style.transition = 'none';
         clean(s);
         if (i < index) {
-          s.classList.add('slide-out-up');   // au-dessus, cachée en haut
+          s.classList.add('slide-out-up');   
         } else if (i === index) {
-          s.classList.add('slide-in-up');    // visible
+          s.classList.add('slide-in-up');  
         } else {
-          // pas de classe = caché en bas (état CSS par défaut)
+
         }
       });
 
@@ -238,7 +238,7 @@
       current = target;
 
       if (target > prev) {
-        // ── Descend ──
+
         clean(sections[prev]);
         sections[prev].classList.add('slide-out-up');
 
@@ -248,7 +248,7 @@
         }, 80);
 
       } else {
-        // ── Remonte ──
+
         clean(sections[prev]);
         sections[prev].classList.add('slide-out-down');
 

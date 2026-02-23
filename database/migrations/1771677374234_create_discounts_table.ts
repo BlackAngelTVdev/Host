@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.string('code').unique()
       table.enum('type', ['percentage', 'fixed'])
       table.float('value')
-      table.integer('max_uses').nullable() // snake_case ici !
+      table.integer('max_uses').nullable() 
       table.integer('used_count').defaultTo(0)
       table.integer('duration_months').nullable()
       table.dateTime('expires_at').nullable()
