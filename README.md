@@ -1,4 +1,4 @@
-# 🚀 Host
+# 🚀 Cloud
 ![Stars](https://img.shields.io/github/stars/BlackAngelTVdev/Host?style=for-the-badge&color=yellow)
 ![Commits](https://img.shields.io/github/commit-activity/m/BlackAngelTVdev/Host?style=for-the-badge&color=blue)
 ![Issues](https://img.shields.io/github/issues/BlackAngelTVdev/Host?style=for-the-badge&color=orange)
@@ -12,17 +12,33 @@
 ## 🧐 Aperçu
 ![Banner](Asset/Img/banner.png)
 
-## ✨ Fonctionnalités
-- ✅ **Déploiement Rapide** : Automatise la mise en ligne de tes applications.
-- ✅ **Gestion Centralisée** : Un seul endroit pour monitorer tous tes serveurs et instances.
-- ✅ **Sécurité Renforcée** : Configuration optimisée pour protéger tes données et tes accès.
 
+## ✨ Fonctionnalités Cloud
+
+* ✅ **Stockage Haute Performance** : Accès ultra-rapide à tes fichiers grâce à une architecture splitée (OS sur SSD / Data sur HDD).
+* ✅ **Synchronisation Multi-Plateforme** : Retrouve tes données partout — PC, Mac, Android et iOS — avec une synchro en temps réel.
+* ✅ **Sécurité & Vie Privée** : Tes fichiers sont stockés sur ton infrastructure privée, pas chez des géants du web. Chiffrement et protection des accès garantis.
+* ✅ **Gestion de Quotas Intelligente** : Un contrôle total sur l'espace alloué pour optimiser chaque Go de tes disques.
+* 
 ## 🛠 Tech Stack
+
 | Technologie | Usage |
 | :--- | :--- |
-| ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white) | Runtime principal |
-| ![AdonisJS](https://img.shields.io/badge/AdonisJS-220052?style=flat-square&logo=adonisjs&logoColor=white) | Framework Backend |
-| ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white) | Base de données |
+| ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white) | Runtime principal ultra-rapide |
+| ![AdonisJS](https://img.shields.io/badge/AdonisJS-220052?style=flat-square&logo=adonisjs&logoColor=white) | Framework Backend & Logique métier |
+| ![Nextcloud](https://img.shields.io/badge/Nextcloud-0082C9?style=flat-square&logo=nextcloud&logoColor=white) | Moteur de stockage et synchronisation |
+| ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white) | Isolation des services et déploiement |
+| ![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=flat-square&logo=mariadb&logoColor=white) | Gestionnaire de base de données relationnelle |
+| ![Stripe](https://img.shields.io/badge/Stripe-008CDD?style=flat-square&logo=stripe&logoColor=white) | Infrastructure de paiement sécurisée |
+
+---
+
+## 🏗 Infrastructure (Hybrid Storage)
+
+Pour garantir une vitesse maximale tout en ayant une capacité de stockage massive, le projet utilise une architecture **Split-Disk** :
+
+* ⚡ **SSD (Système)** : L'application AdonisJS, le moteur Nextcloud et les bases de données sont sur SSD pour une réactivité instantanée.
+* 📦 **HDD (Data)** : Les fichiers volumineux des utilisateurs sont déportés sur un disque haute capacité pour maximiser l'espace.
 
 ## 🚀 Installation & Lancement
 
@@ -52,7 +68,7 @@
 
 ## 📖 Utilisation
 
-Pour géré les plan database/seeders/plan_seeder.ts :
+Pour gérer les plans (database/seeders/plan_seeder.ts)
 
 ```javascript
 import Plan from '#models/plan'
